@@ -454,10 +454,13 @@ class App:
         p = self._selected_proc()
         if not p or not p.exe:
             return
-        if sys.platform == "win32":
-            subprocess.Popen(["explorer", "/select,", p.exe])
-        else:
-            subprocess.Popen(["xdg-open", os.path.dirname(p.exe)])
+        try:
+            if sys.platform == "win32":
+                subprocess.Popen(["explorer", "/select,", p.exe])
+            else:
+                subprocess.Popen(["xdg-open", os.path.dirname(p.exe)])
+        except OSError as exc:  # e.g. no file manager installed
+            messagebox.showerror(APP_NAME, f"Could not open the folder:\n{exc}")
 
     def _kill_selected(self) -> None:
         p = self._selected_proc()

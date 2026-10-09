@@ -5,8 +5,8 @@ Task Manager for one app: type a name such as `claude`, press **Start**, and it
 tracks every matching process and every child process it starts.
 
 It reads everything from your own PC through Windows' process APIs (via
-[psutil](https://github.com/giampaolo/psutil)). It makes no network calls, has
-no telemetry and needs no account.
+[psutil](https://github.com/giampaolo/psutil)) and works fully offline:
+no internet is needed to install, build or run it.
 
 ## What it shows
 
@@ -35,33 +35,39 @@ no telemetry and needs no account.
   than Task Manager's Disk column, which counts only physical disk traffic.
   **Other I/O** is control operations that are neither reads nor writes.
 
-## Download (no Python needed)
+## Strictly offline
 
-Every push to this repository builds `ProcWatch.exe` on GitHub Actions. Open the
-**Actions** tab, pick the latest **Build Windows app** run, and download the
-**ProcWatch-windows** artifact. Unzip it and double-click `ProcWatch.exe`.
+* The app never opens a network connection. It has no updates, telemetry,
+  accounts or web views. The **Network** tab only *reads* the list of
+  connections other apps have open; ProcWatch makes none itself.
+* `tests/test_offline.py` fails if anyone adds code that imports a networking
+  library or opens a socket.
+* The one library it needs (psutil) is bundled in `wheels/`, along with the
+  tools to build the `.exe`. Installing and building never touch the internet.
+
+## Run it (pick one)
+
+### 1. ProcWatch.exe (easiest, no Python needed)
+
+Open the **Actions** tab of this repository, pick the latest
+**Build Windows app** run, and download **ProcWatch-windows**. Unzip it and
+double-click `ProcWatch.exe`. That one file is the whole app. Copy it anywhere,
+even to a PC with no internet.
 
 Windows SmartScreen may warn about an unsigned app the first time. Click
 **More info**, then **Run anyway**.
 
-## Run from source
+### 2. From the source code
 
 1. Install Python 3.10 or newer from python.org. Keep "tcl/tk and IDLE"
    ticked in the installer.
-2. Double-click `run.bat`. The first run installs `psutil`; after that it
-   runs fully offline.
+2. Double-click `run.bat`. It installs psutil from the `wheels` folder (no
+   internet) and opens the app.
 
-Or from a terminal:
+### 3. Build your own .exe
 
-```bat
-pip install -r requirements.txt
-python -m procwatch
-```
-
-## Build your own .exe
-
-Double-click `build_exe.bat`. It creates a single `dist\ProcWatch.exe` you can
-copy to any Windows 10/11 PC. That PC needs no Python and no internet.
+With Python installed, double-click `build_exe.bat`. It installs PyInstaller
+from `wheels\build` (no internet) and creates `dist\ProcWatch.exe`.
 
 ## Tips
 
@@ -93,5 +99,6 @@ procwatch/monitor.py   sampling engine: processes, memory, I/O, files, network, 
 procwatch/app.py       the Tk user interface
 procwatch/charts.py    the line charts
 procwatch/recorder.py  CSV logging
-tests/                 tests for the sampling engine (pytest)
+wheels/                bundled psutil and PyInstaller, for offline install and build
+tests/                 tests for the sampling engine and the offline guarantee (pytest)
 ```
