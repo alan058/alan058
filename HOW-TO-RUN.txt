@@ -1,0 +1,25 @@
+ProcWatch - offline process activity monitor for Windows 11
+=============================================================
+
+Works fully offline. It never connects to the internet.
+
+OPTION A - ProcWatch.exe (no Python needed)
+   If ProcWatch.exe is in this folder, just double-click it.
+   If Windows SmartScreen warns, click "More info" then "Run anyway".
+
+OPTION B - run.bat (if there is no ProcWatch.exe)
+   1. Install Python 3.10 or newer from python.org (one time only).
+      Keep "tcl/tk and IDLE" ticked in the installer.
+   2. Double-click run.bat. The first time, it installs psutil from
+      the "wheels" folder. No internet needed.
+
+OPTION C - build your own ProcWatch.exe
+   With Python installed, double-click build_exe.bat and use
+   dist\ProcWatch.exe (also offline: build tools are in wheels\build).
+
+USING IT
+   "claude" is already filled in. Press Start. Every Claude process
+   and everything it launches shows up with live memory, CPU, disk,
+   open files, network connections and an activity log.
+
+See README.md for what every tab and number means.

@@ -51,8 +51,9 @@ no internet is needed to install, build or run it.
 
 Open the **Actions** tab of this repository, pick the latest
 **Build Windows app** run, and download **ProcWatch-windows**. Unzip it and
-double-click `ProcWatch.exe`. That one file is the whole app. Copy it anywhere,
-even to a PC with no internet.
+double-click `ProcWatch.exe`. The `.exe` alone is the whole app. Copy it
+anywhere, even to a PC with no internet. The zip also holds the source and the
+scripts below.
 
 Windows SmartScreen may warn about an unsigned app the first time. Click
 **More info**, then **Run anyway**.
