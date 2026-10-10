@@ -1,0 +1,46 @@
+NestLaptop - turn this laptop off (and on) with a Google Nest Mini
+===================================================================
+
+1. INSTALL PYTHON (one time)
+   Get Python 3.10 or newer from python.org.
+   In the installer, tick "Add python.exe to PATH".
+
+2. PUT THIS FOLDER SOMEWHERE SIMPLE
+   For example C:\NestLaptop
+
+3. SINRIC PRO (connects Google Home to this program)
+   a. Sign up at https://sinric.pro (free plan is enough).
+   b. Devices > Add Device. Name: Laptop. Type: Switch. Save.
+      Copy the Device ID.
+   c. Credentials: copy the App Key and the App Secret.
+   d. Google Home app on your phone: + > Set up device >
+      Works with Google > search "Sinric Pro" > sign in.
+
+4. SETTINGS
+   Copy config.example.json and name the copy config.json.
+   Open config.json in Notepad and paste between the quotes:
+      "sinric_app_key":    App Key
+      "sinric_app_secret": App Secret
+      "sinric_device_id":  Device ID
+   "off_action" can be "shutdown", "sleep" or "hibernate".
+   Save the file.
+
+5. TEST (nothing really shuts down)
+   Double-click test_laptop.bat, then say:
+      "Hey Google, turn off laptop"
+   The window should show: [dry run] Would shutdown now
+   Close the window when done.
+
+6. INSTALL
+   Double-click install_laptop.bat and click Yes for admin rights.
+   It now runs in the background and starts with Windows.
+   Say "Hey Google, turn off laptop" - it shuts down 5 seconds later.
+   Say "Hey Google, turn on laptop" within those 5 seconds to cancel.
+
+TO REMOVE: double-click uninstall_laptop.bat
+LOG FILE:  nest_laptop.log in this folder
+PROBLEMS:  Google says "Laptop isn't available" = the program is not
+           connected. Check nest_laptop.log for a wrong key or secret.
+
+Turning the laptop ON by voice needs an always-on device (for example
+a Raspberry Pi) as a bridge. See README.md, section 4.

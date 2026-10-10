@@ -150,6 +150,7 @@ Test waking without Google: shut the laptop down, then run
 ## Files
 
 ```
+HOW-TO-RUN.txt       short step-by-step guide
 nest_laptop.py       the program (laptop, bridge, wake, check-laptop, check-bridge)
 config.example.json  settings template; copy to config.json
 requirements.txt     the Sinric Pro library
