@@ -1,0 +1,21 @@
+{
+  "_help": "Copy this file to config.json and fill it in. See README.md for where each value comes from.",
+
+  "setup": "laptop_only",
+  "_setup_help": "laptop_only = only 'turn off' works, no extra hardware. with_bridge = 'turn on' works too, needs an always-on device running the bridge.",
+
+  "sinric_app_key": "",
+  "sinric_app_secret": "",
+  "sinric_device_id": "",
+
+  "off_action": "shutdown",
+  "_off_action_help": "shutdown, sleep or hibernate. Sleep is the easiest to wake up from with Wake-on-LAN, especially over Wi-Fi.",
+  "off_delay_seconds": 5,
+
+  "laptop_mac": "",
+  "laptop_ip": "",
+  "broadcast_ip": "255.255.255.255",
+  "_with_bridge_help": "Only for with_bridge. laptop_mac and laptop_ip come from 'ipconfig /all' on the laptop. Put the same agent_token (any random text, 16+ characters) in the config.json on both the laptop and the bridge.",
+  "agent_port": 8765,
+  "agent_token": ""
+}

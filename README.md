@@ -103,3 +103,8 @@ procwatch/recorder.py  CSV logging
 wheels/                bundled psutil and PyInstaller, for offline install and build
 tests/                 tests for the sampling engine and the offline guarantee (pytest)
 ```
+
+## Also in this repository
+
+[NestLaptop](NestLaptop/README.md): turn a Windows laptop on and off with a Google
+Nest Mini ("Hey Google, turn off the laptop").
