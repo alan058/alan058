@@ -108,3 +108,6 @@ tests/                 tests for the sampling engine and the offline guarantee (
 
 [NestLaptop](NestLaptop/README.md): turn a Windows laptop on and off with a Google
 Nest Mini ("Hey Google, turn off the laptop").
+
+[YouTubeCoach](YouTubeCoach/README.md): an AI agent that reviews your YouTube videos
+(title, thumbnail, transcript, view counts) and tells you how to get more viewers.

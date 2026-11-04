@@ -36,6 +36,16 @@ jobs:
       - run: python -m pip install -r NestLaptop/requirements.txt pytest
       - run: python -m pytest -v NestLaptop/tests
 
+  youtube-coach:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r YouTubeCoach/requirements.txt pytest
+      - run: python -m pytest -v YouTubeCoach/tests
+
   build:
     runs-on: windows-latest
     steps:

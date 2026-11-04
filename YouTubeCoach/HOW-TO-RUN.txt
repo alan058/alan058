@@ -1,0 +1,24 @@
+YouTube Coach - an AI agent that reviews your YouTube videos
+=============================================================
+
+It reads each video's title, description, tags, thumbnail, transcript and
+view counts, then Claude writes a report on how to get more viewers.
+
+ONE-TIME SETUP
+   1. Install Python 3.10 or newer from python.org.
+   2. Get a YouTube Data API key (console.cloud.google.com, enable
+      "YouTube Data API v3", Credentials > Create credentials > API key).
+   3. Get a Claude API key from platform.claude.com.
+   4. Copy config.example.json to config.json and paste both keys in.
+
+USE IT
+   Double-click review.bat and paste a video link or your @handle.
+   The first run installs the packages it needs (needs internet).
+   Reports appear in the "reports" folder.
+
+   Or in a terminal:
+      python video_coach.py review https://youtu.be/VIDEO_ID
+      python video_coach.py channel @YourHandle --latest 5
+      python video_coach.py check
+
+See README.md for what the reports contain.

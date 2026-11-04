@@ -9,3 +9,5 @@ NestLaptop/config.json
 NestLaptop/lib/
 NestLaptop/.venv/
 NestLaptop/*.log*
+YouTubeCoach/config.json
+YouTubeCoach/reports/
