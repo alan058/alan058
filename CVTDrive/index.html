@@ -126,6 +126,30 @@ button:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
 @keyframes toastIn { from { opacity: 0; transform: translateY(-6px); } }
 @keyframes toastOut { to { opacity: 0; transform: translateY(-6px); } }
 
+/* gas pedal level panel */
+.pedalbox {
+  position: absolute; left: max(16px, env(safe-area-inset-left, 0px)); bottom: 14px; width: 230px;
+  display: grid; gap: 7px; padding: 10px 12px; border-radius: 12px;
+  background: rgba(13, 18, 24, .82); border: 1px solid rgba(255, 255, 255, .08); backdrop-filter: blur(4px);
+}
+.show-touch .pedalbox { display: none; }
+.pb-head { display: flex; justify-content: space-between; align-items: baseline; }
+.pb-title { font: 600 12px/1 var(--font-display); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.pb-head output { font: 700 17px/1 var(--font-display); color: var(--amber); font-variant-numeric: tabular-nums; }
+.levels { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+.lvl {
+  border: 1px solid var(--line); background: var(--panel-2); border-radius: 7px; padding: 6px 0; cursor: pointer;
+  font: 600 13px/1 var(--font-display); font-variant-numeric: tabular-nums; color: var(--muted);
+}
+.lvl:hover { color: var(--text); border-color: var(--muted); }
+.lvl[aria-pressed="true"] { background: var(--amber); border-color: var(--amber); color: var(--ink); }
+.meter { display: grid; grid-template-columns: 42px 1fr 38px; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+.meter output { text-align: right; font: 600 13px/1 var(--font-display); color: var(--text); font-variant-numeric: tabular-nums; }
+.track { position: relative; height: 8px; border-radius: 4px; background: var(--panel-2); }
+.track i { position: absolute; inset: 0 auto 0 0; width: 0%; background: var(--amber); border-radius: 4px; }
+.meter.brake .track i { background: var(--red); }
+.track b { position: absolute; top: -3px; bottom: -3px; width: 2px; left: 100%; margin-left: -1px; background: var(--text); opacity: .75; }
+
 /* touch controls */
 .touch { display: none; position: absolute; inset: auto 0 0 0; pointer-events: none;
   padding-bottom: 12px; padding-left: max(12px, env(safe-area-inset-left, 0px)); padding-right: max(12px, env(safe-area-inset-right, 0px)); }
@@ -298,6 +322,22 @@ kbd {
     </div>
     <div class="toasts" id="toasts" aria-live="polite"></div>
 
+    <div class="pedalbox" id="pedalBox">
+      <div class="pb-head">
+        <span class="pb-title">Gas level</span>
+        <output id="gasLevelOut">100%</output>
+      </div>
+      <div class="levels" role="group" aria-label="Gas pedal level when W is held">
+        <button class="lvl" data-level="0.2" aria-pressed="false" title="Key 4">20</button>
+        <button class="lvl" data-level="0.4" aria-pressed="false" title="Key 5">40</button>
+        <button class="lvl" data-level="0.6" aria-pressed="false" title="Key 6">60</button>
+        <button class="lvl" data-level="0.8" aria-pressed="false" title="Key 7">80</button>
+        <button class="lvl" data-level="1" aria-pressed="true" title="Key 8">100</button>
+      </div>
+      <div class="meter"><span>Gas</span><div class="track"><i id="gasBar"></i><b id="gasMark"></b></div><output id="gasPct">0%</output></div>
+      <div class="meter brake"><span>Brake</span><div class="track"><i id="brakeBar"></i></div><output id="brakePct">0%</output></div>
+    </div>
+
     <div class="touch" id="touch">
       <div class="steer">
         <button id="tLeft" aria-label="Steer left"><svg width="22" height="22" viewBox="0 0 22 22"><path d="M14 4 L6 11 L14 18" fill="none" stroke="#e4eaf0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -327,8 +367,10 @@ kbd {
           <div>
             <h3>Controls</h3>
             <dl class="keys">
-              <dt><kbd>W</kbd> <kbd>&uarr;</kbd></dt><dd>Gas (tap for part throttle)</dd>
-              <dt><kbd>Shift</kbd>+<kbd>W</kbd></dt><dd>Light throttle, 35%</dd>
+              <dt><kbd>W</kbd> <kbd>&uarr;</kbd></dt><dd>Gas, pressed to the chosen level</dd>
+              <dt><kbd>4</kbd>&ndash;<kbd>8</kbd></dt><dd>Gas level 20, 40, 60, 80, 100%</dd>
+              <dt><kbd>&minus;</kbd> <kbd>=</kbd></dt><dd>Gas level down / up 10%</dd>
+              <dt><kbd>Shift</kbd>+<kbd>W</kbd></dt><dd>Full throttle (kickdown)</dd>
               <dt><kbd>S</kbd> <kbd>&darr;</kbd></dt><dd>Brake</dd>
               <dt><kbd>A</kbd> <kbd>D</kbd></dt><dd>Steer (or arrow keys)</dd>
               <dt><kbd>0</kbd>&ndash;<kbd>3</kbd></dt><dd>Mode N, D, S, M</dd>
@@ -336,7 +378,7 @@ kbd {
               <dt><kbd>C</kbd></dt><dd>Cruise control at current speed</dd>
               <dt><kbd>R</kbd> <kbd>Esc</kbd></dt><dd>Reset car / pause</dd>
             </dl>
-            <p class="hint" style="margin-top:10px">Gamepad works too: triggers for pedals, left stick to steer, bumpers to step.</p>
+            <p class="hint" style="margin-top:10px">Touch screens: press higher on the gas pedal for more throttle. Gamepad triggers are fully analog.</p>
           </div>
           <div>
             <h3>Transmission modes</h3>
@@ -734,7 +776,7 @@ let cleanDist = 0;
 const hist = { rpm: new Array(120).fill(750), spd: new Array(120).fill(0), acc: 0 };
 
 /* ============================================================ input */
-const input = { throttle: 0, brake: 0, steer: 0, keys: new Set(), touch: { gas: 0, brake: 0, left: false, right: false }, pad: { gas: 0, brake: 0, steer: 0, prev: [] } };
+const input = { throttle: 0, brake: 0, steer: 0, level: clamp(Number(store.get('cvt-gas-level', 1)) || 1, 0.1, 1), keys: new Set(), touch: { gas: 0, brake: 0, left: false, right: false }, pad: { gas: 0, brake: 0, steer: 0, prev: [] } };
 let paused = true;
 
 function pollPad() {
@@ -757,7 +799,8 @@ function pollPad() {
 function readInput(dt) {
   const k = input.keys;
   const shift = k.has('ShiftLeft') || k.has('ShiftRight');
-  const kGas = (k.has('KeyW') || k.has('ArrowUp')) ? (shift ? 0.35 : 1) : 0;
+  // W presses the pedal to the chosen level; Shift+W floors it (kickdown)
+  const kGas = (k.has('KeyW') || k.has('ArrowUp')) ? (shift ? 1 : input.level) : 0;
   const kBrake = (k.has('KeyS') || k.has('ArrowDown')) ? 1 : 0;
   const kSteer = ((k.has('KeyD') || k.has('ArrowRight')) ? 1 : 0) - ((k.has('KeyA') || k.has('ArrowLeft')) ? 1 : 0);
   pollPad();
@@ -1053,6 +1096,14 @@ function shiftStep(d) {
   }
   S.mStep = next; updateStepLabel();
 }
+function setGasLevel(v) {
+  input.level = Math.round(clamp(v, 0.1, 1) * 10) / 10;
+  store.set('cvt-gas-level', input.level);
+  $('#gasLevelOut').textContent = `${Math.round(input.level * 100)}%`;
+  $('#gasMark').style.left = `${input.level * 100}%`;
+  document.querySelectorAll('.lvl').forEach((b) => b.setAttribute('aria-pressed', String(Math.abs(Number(b.dataset.level) - input.level) < 0.01)));
+}
+document.querySelectorAll('.lvl').forEach((b) => b.addEventListener('click', () => { setGasLevel(Number(b.dataset.level)); b.blur(); }));
 function updateStepLabel() { $('#mStep').textContent = `M${S.mStep + 1}`; }
 function setCruise(on) {
   if (on && S.v < 30 / 3.6) { toast('Cruise needs at least 30 km/h'); on = false; }
@@ -1086,6 +1137,13 @@ window.addEventListener('keydown', (e) => {
     case 'KeyE': case 'PageUp': shiftStep(1); break;
     case 'KeyQ': case 'PageDown': shiftStep(-1); break;
     case 'KeyC': setCruise(S.cruise == null); break;
+    case 'Digit4': case 'Numpad4': setGasLevel(0.2); break;
+    case 'Digit5': case 'Numpad5': setGasLevel(0.4); break;
+    case 'Digit6': case 'Numpad6': setGasLevel(0.6); break;
+    case 'Digit7': case 'Numpad7': setGasLevel(0.8); break;
+    case 'Digit8': case 'Numpad8': setGasLevel(1); break;
+    case 'Minus': case 'NumpadSubtract': setGasLevel(input.level - 0.1); break;
+    case 'Equal': case 'NumpadAdd': setGasLevel(input.level + 0.1); break;
     case 'KeyR': if (!paused) resetCar(); break;
     case 'Escape': case 'KeyP': togglePause(); break;
     case 'Enter': if (paused) startDriving(); break;
@@ -1113,15 +1171,17 @@ bindHold($('#tLeft'), () => (input.touch.left = true), () => (input.touch.left =
 bindHold($('#tRight'), () => (input.touch.right = true), () => (input.touch.right = false));
 function bindPedal(el, key, minVal) {
   const fill = el.querySelector('i');
+  const label = el.querySelector('span'), name = label.textContent;
   const set = (e) => {
     const r = el.getBoundingClientRect();
     const v = clamp(1 - (e.clientY - r.top) / r.height, 0, 1);
-    input.touch[key] = clamp(minVal + (1 - minVal) * v * 1.25, minVal, 1);
+    input.touch[key] = Math.round(clamp(minVal + (1 - minVal) * v * 1.25, minVal, 1) * 10) / 10;
     fill.style.height = `${input.touch[key] * 100}%`;
+    label.textContent = `${Math.round(input.touch[key] * 100)}%`;
   };
   el.addEventListener('pointerdown', (e) => { e.preventDefault(); el.setPointerCapture(e.pointerId); set(e); });
   el.addEventListener('pointermove', (e) => { if (el.hasPointerCapture(e.pointerId)) set(e); });
-  const end = () => { input.touch[key] = 0; fill.style.height = '0%'; };
+  const end = () => { input.touch[key] = 0; fill.style.height = '0%'; label.textContent = name; };
   el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
 }
 bindPedal($('#tGas'), 'gas', 0.2);
@@ -1556,6 +1616,7 @@ function updateHud() {
 
 /* ============================================================ main loop */
 let last = performance.now(), hudAcc = 0;
+const gasBar = $('#gasBar'), gasPct = $('#gasPct'), brakeBar = $('#brakeBar'), brakePct = $('#brakePct');
 const disp = { rpm: 750, spd: 0 };
 function frame(now) {
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
@@ -1571,6 +1632,8 @@ function frame(now) {
     hist.acc += dt;
     while (hist.acc >= 0.1) { hist.acc -= 0.1; hist.rpm.push(toRpm(S.we)); hist.rpm.shift(); hist.spd.push(S.v * 3.6); hist.spd.shift(); }
   }
+  gasBar.style.width = `${input.throttle * 100}%`; gasPct.textContent = `${Math.round(input.throttle * 100)}%`;
+  brakeBar.style.width = `${input.brake * 100}%`; brakePct.textContent = `${Math.round(input.brake * 100)}%`;
   disp.rpm = lerp(disp.rpm, toRpm(S.we), Math.min(1, dt * 18));
   disp.spd = lerp(disp.spd, S.v * 3.6, Math.min(1, dt * 12));
   renderRoad(now);
@@ -1596,7 +1659,7 @@ function frame(now) {
 function boot(data) {
   if (data && data.S) Object.assign(S, data.S);
   if (data && data.mode) { const m = data.mode; S.mode = 'D'; setMode(m); }
-  renderGoals(); updateHud(); layout();
+  renderGoals(); updateHud(); layout(); setGasLevel(input.level);
   if (data && data.running) togglePause(false); else togglePause(true);
   requestAnimationFrame((t) => { last = t; frame(t); });
 }

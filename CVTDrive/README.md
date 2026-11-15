@@ -61,7 +61,10 @@ not modelled here.
 
 | Key | Action |
 |---|---|
-| W or Up | Gas (Shift + W for 35% throttle) |
+| W or Up | Gas, pressed to the chosen gas level |
+| 4 to 8 | Gas level 20, 40, 60, 80 or 100% |
+| - / = | Gas level down / up by 10% |
+| Shift + W | Full throttle (kickdown) |
 | S or Down | Brake |
 | A / D or Left / Right | Steer |
 | 0, 1, 2, 3 | Mode N, D, S, M |
@@ -70,7 +73,11 @@ not modelled here.
 | R | Reset car |
 | Esc or P | Pause and show controls |
 
-On phones and tablets, touch pedals and steering buttons appear on screen. A
+The gas level panel at the bottom left of the road view also lets you click a
+level, and shows live gas and brake pedal positions.
+
+On phones and tablets, touch pedals and steering buttons appear on screen; press
+higher on the gas pedal for more throttle (shown in 10% steps). A
 gamepad also works (triggers for pedals, left stick to steer, bumpers to step).
 
 ## Goals
