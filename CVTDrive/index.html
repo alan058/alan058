@@ -181,7 +181,7 @@ button:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
 .overlay[hidden] { display: none !important; }
 .card {
   width: min(720px, 100%); max-height: 100%; overflow: auto;
-  background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px 0;
   box-shadow: 0 20px 60px rgba(0,0,0,.45);
 }
 .card h2 { margin: 0 0 6px; font: 700 26px/1.1 var(--font-display); text-transform: uppercase; letter-spacing: .03em; text-wrap: balance; }
@@ -208,7 +208,18 @@ kbd {
 .modelist li { display: grid; grid-template-columns: 26px 1fr; gap: 8px; color: var(--muted); line-height: 1.35; }
 .modelist b { font: 700 17px/1.2 var(--font-display); color: var(--amber); }
 .goal-list { display: grid; gap: 4px; margin: 10px 0 0; padding: 0; list-style: none; color: var(--muted); }
-.card-actions { display: flex; gap: 10px; align-items: center; margin-top: 18px; flex-wrap: wrap; }
+.soundrow { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+.soundrow p { margin-bottom: 10px; }
+.soundctl { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.rpmfield { color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
+.rpmfield input {
+  width: 76px; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--ink);
+  color: var(--text); font: 600 14px/1 var(--font-display); font-variant-numeric: tabular-nums;
+}
+.card-actions {
+  display: flex; gap: 10px; align-items: center; margin-top: 14px; flex-wrap: wrap;
+  position: sticky; bottom: 0; background: var(--panel); padding-block: 12px 18px; border-top: 1px solid var(--line);
+}
 .primary {
   background: var(--amber); color: var(--ink); border: 0; border-radius: 10px; padding: 11px 22px;
   font: 700 16px/1 var(--font-display); letter-spacing: .06em; text-transform: uppercase; cursor: pointer;
@@ -266,7 +277,7 @@ kbd {
   .stat .k { font-size: 10px; }
   .stat .v { font-size: 14px; }
   .cols, .spec { grid-template-columns: 1fr; }
-  .card { padding: 18px; }
+  .card { padding: 18px 18px 0; }
   .lamp { font-size: 10px; padding: 5px 7px; }
 }
 @media (max-height: 620px) and (min-width: 641px) {
@@ -351,16 +362,16 @@ kbd {
 
     <div class="overlay" id="overlay">
       <div class="card" role="dialog" aria-labelledby="ovTitle">
-        <h2 id="ovTitle">Corolla Cross 1.8 CVT &middot; South Africa</h2>
-        <p>You're driving a car built to the figures of the South African Corolla Cross 1.8 petrol. Its CVT has no fixed gears: a steel belt runs between two pulleys whose halves slide apart and together, so the ratio changes smoothly. Watch the diagram at the bottom: engine speed holds steady while road speed climbs. Traffic keeps left; overtake on the right.</p>
+        <h2 id="ovTitle">Corolla Cross 1.8 XR CVT &middot; South Africa</h2>
+        <p>You're driving a car built to the figures of the South African Corolla Cross 1.8 XR. Its K313 CVT has no fixed gears: a steel belt runs between two pulleys whose halves slide apart and together, so the ratio changes smoothly. Watch the diagram at the bottom: engine speed holds steady while road speed climbs. Traffic keeps left; overtake on the right.</p>
         <div class="spec" aria-label="Vehicle specification">
           <div><span>Engine</span><b>1.8 L Dual VVT-i I4 (2ZR)</b></div>
           <div><span>Power</span><b>103 kW at 6,400 rpm</b></div>
           <div><span>Torque</span><b>172 Nm at 4,000 rpm</b></div>
-          <div><span>Transmission</span><b>CVT, 7-step manual mode, FWD</b></div>
-          <div><span>Belt ratios</span><b>2.480&ndash;0.396 (estimate)</b></div>
-          <div><span>Final drive</span><b>5.698 (estimate)</b></div>
-          <div><span>Weight, tyres</span><b>~1,365 kg &middot; 215/60 R17</b></div>
+          <div><span>Transmission</span><b>Aisin K313 CVT, 7-step mode, FWD</b></div>
+          <div><span>Belt ratios</span><b>2.480&ndash;0.396</b></div>
+          <div><span>Final drive</span><b>4.761</b></div>
+          <div><span>Weight, tyres</span><b>~1,385 kg &middot; 225/50 R18</b></div>
           <div><span>Claimed fuel</span><b>6.8 L/100 km &middot; 47 L tank</b></div>
         </div>
         <div class="cols">
@@ -390,10 +401,21 @@ kbd {
             </ul>
             <h3 style="margin-top:14px">Goals</h3>
             <ul class="goal-list">
-              <li>Sprint: 0&ndash;100 km/h in under 10.3 s</li>
+              <li>Sprint: 0&ndash;100 km/h in under 10.8 s</li>
               <li>Hypermiler: one full km at 6.0 L/100 km or less, averaging 70 km/h or more</li>
               <li>Clean 5: 5 km without hitting traffic or leaving the road</li>
             </ul>
+          </div>
+        </div>
+        <div class="soundrow">
+          <h3>Engine sound</h3>
+          <p>The built-in sound is a synthesised four-cylinder. For the real thing, record your own car holding a steady engine speed for about 10 seconds and load it here. The game raises and lowers its pitch with the revs.</p>
+          <div class="soundctl">
+            <label class="tool" for="recFile">Load my engine recording</label>
+            <input type="file" id="recFile" accept="audio/*" hidden>
+            <label class="rpmfield" for="recRpm">Recorded at <input type="number" id="recRpm" value="2000" min="600" max="6500" step="100" inputmode="numeric"> rpm</label>
+            <button class="tool" id="recClear" hidden>Back to built-in sound</button>
+            <span class="hint" id="recStatus" role="status"></span>
           </div>
         </div>
         <div class="card-actions">
@@ -469,22 +491,22 @@ function shade(hex, amt) {
 }
 
 /* ============================================================ vehicle model */
-// Toyota Corolla Cross 1.8 petrol CVT, South African build (Prospecton, Durban): 2ZR 1.8 L
-// Dual VVT-i four-cylinder, front-wheel drive, belt CVT with a torque converter and a 7-step
-// sequential mode. Toyota South Africa quotes 103 kW at 6,400 rpm and 172 Nm at 4,000 rpm,
-// 215/60 R17 tyres and 6.8 L/100 km combined. Toyota SA does not publish the CVT's internal
-// ratios, so the belt range and final drive below are estimates for Toyota's 1.8 L CVT.
+// Toyota Corolla Cross 1.8 XR CVT, South African build (Prospecton, Durban): 2ZR 1.8 L Dual
+// VVT-i four-cylinder, front-wheel drive. Toyota South Africa quotes 103 kW at 6,400 rpm and
+// 172 Nm at 4,000 rpm. The gearbox is the Aisin K313 belt CVT with a torque converter and a
+// 7-step sequential mode. Toyota's published K313 figures (1.8 L Corolla): forward ratios
+// 2.480 to 0.396 and a 4.761 final drive. XR grade rides on 18-inch wheels.
 const CAR = {
-  name: 'Corolla Cross 1.8 XS CVT (South Africa)',
-  mass: 1440,                    // ~1,365 kg kerb weight + driver
-  wheelR: 0.335,                 // 215/60 R17 rolling radius
-  finalDrive: 5.698, eff: 0.84,
+  name: 'Corolla Cross 1.8 XR CVT (South Africa)',
+  mass: 1460,                    // ~1,385 kg kerb weight (estimate for XR) + driver
+  wheelR: 0.333,                 // 225/50 R18 rolling radius
+  finalDrive: 4.761, eff: 0.87,  // K313 final drive
   cdA: 0.32 * 2.55, crr: 0.011, mu: 1.0, frontWeight: 0.6,
   ie: 0.18,                      // engine + primary pulley inertia, kg·m²
   idle: 750, redline: 6600, maxRpm: 8000,
   launchRatio: null,             // no launch gear: the belt does all the work
-  rLow: 2.480, rHigh: 0.396,     // belt ratio range
-  // M mode: seven fixed steps
+  rLow: 2.480, rHigh: 0.396,     // K313 belt ratio range
+  // M mode: seven fixed steps (Toyota does not publish the step ratios; evenly spaced here)
   manual: [2.480, 1.899, 1.454, 1.113, 0.852, 0.653, 0.500],
 };
 CAR.kc = 172 / Math.pow(2300 * Math.PI / 30, 2); // converter capacity: stalls near 2,300 rpm under full torque
@@ -693,6 +715,7 @@ function suvSprite(body, lit, res = 1) {
     g.fillStyle = 'rgba(230,234,238,.75)'; g.beginPath(); g.ellipse(95, 94, 9, 6, 0, 0, Math.PI * 2); g.fill();
     g.fillStyle = '#eef0e6'; rrect(g, 64, 104, 62, 15, 3); g.fill();
     g.fillStyle = '#20262d'; g.font = `700 10px ${FONT_D}`; g.textAlign = 'center'; g.fillText('CVT 26 GP', 95, 116);
+    g.fillStyle = 'rgba(230,234,238,.8)'; g.font = `700 9px ${FONT_D}`; g.fillText('XR', 160, 103);
     // black cladding and skid plate
     g.fillStyle = '#1d2125'; rrect(g, 3, 120, 184, 22, 9); g.fill();
     g.fillStyle = '#7d858c'; rrect(g, 60, 132, 70, 7, 3); g.fill();
@@ -1029,7 +1052,7 @@ function updateRecords(dt) {
     const best = REC.best0100 == null || run.t < REC.best0100;
     if (best) REC.best0100 = run.t;
     toast(`0–100 km/h in ${run.t.toFixed(2)} s${best ? ' · new best' : ''}`, best ? 'good' : '');
-    if (run.t < 10.3) completeGoal('sprint', 'Sprint goal complete');
+    if (run.t < 10.8) completeGoal('sprint', 'Sprint goal complete');
     store.set('cvt-records', REC);
   }
   if (!run.done400 && run.d >= 400) {
@@ -1126,6 +1149,7 @@ function togglePause(force) {
 
 /* keyboard */
 window.addEventListener('keydown', (e) => {
+  if (e.target && e.target.tagName === 'INPUT') return;
   if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) e.preventDefault();
   if (e.repeat) { input.keys.add(e.code); return; }
   input.keys.add(e.code);
@@ -1191,60 +1215,200 @@ if (window.matchMedia('(hover: none), (pointer: coarse)').matches) appEl.classLi
 window.addEventListener('touchstart', () => appEl.classList.add('show-touch'), { once: true, passive: true });
 
 /* ============================================================ audio */
+// Engine sound is built from the engine's real firing pattern rather than a plain tone:
+// a four-stroke four-cylinder repeats every two crank turns, so the oscillators run at
+// rpm / 120 Hz and carry harmonics at every half engine order, strongest at the firing
+// orders (2nd, 4th, 6th...). Fixed resonances stand in for the intake and exhaust, so the
+// tone colour stays put while the pitch moves, as it does in a real car.
 const audio = (() => {
-  let ctx = null, master, eng1, eng2, engF, engG, whine, whineG, noiseG, windG, on = false;
+  let ctx = null, on = false, started = false, n = null, custom = null;
+  let jitter = 0, crankUntil = 0, flare = 0;
+
+  function engineWave(rasp) {
+    const H = 97, real = new Float32Array(H), imag = new Float32Array(H);
+    const rnd = mulberry(rasp ? 23 : 11);
+    for (let h = 1; h < H; h++) {
+      const order = h / 2;
+      let amp;
+      if (h % 4 === 0) amp = rasp ? 0.9 / Math.pow(h / 4, 0.9) : 1 / Math.pow(h / 4, 1.5);   // firing orders
+      else if (h % 2 === 0) amp = (rasp ? 0.22 : 0.16) / Math.pow(order, 0.8);                // 1st, 3rd, 5th order
+      else amp = (rasp ? 0.14 : 0.10) / Math.pow(order, 0.7) * (0.5 + rnd());                 // half orders: cylinder imbalance
+      amp *= Math.exp(-h / (rasp ? 70 : 26));
+      const ph = rnd() * Math.PI * 2;
+      real[h] = amp * Math.cos(ph); imag[h] = amp * Math.sin(ph);
+    }
+    return ctx.createPeriodicWave(real, imag);
+  }
+  const gain = (v) => { const g = ctx.createGain(); g.gain.value = v; return g; };
+  const filt = (type, f, q, db) => { const b = ctx.createBiquadFilter(); b.type = type; b.frequency.value = f; if (q != null) b.Q.value = q; if (db != null) b.gain.value = db; return b; };
+
   function build() {
     ctx = new (window.AudioContext || window.webkitAudioContext)();
-    master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
-    engF = ctx.createBiquadFilter(); engF.type = 'lowpass'; engF.Q.value = 3;
-    engG = ctx.createGain(); engG.gain.value = 0.2;
-    eng1 = ctx.createOscillator(); eng1.type = 'sawtooth';
-    eng2 = ctx.createOscillator(); eng2.type = 'square';
-    const g2 = ctx.createGain(); g2.gain.value = 0.35;
-    eng1.connect(engF); eng2.connect(g2); g2.connect(engF); engF.connect(engG); engG.connect(master);
-    whine = ctx.createOscillator(); whine.type = 'sine';
-    whineG = ctx.createGain(); whineG.gain.value = 0; whine.connect(whineG); whineG.connect(master);
-    const buf = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
+    n = {};
+    const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 4; comp.connect(ctx.destination);
+    n.master = gain(0); n.master.connect(comp);
+    // everything is heard from inside the cabin
+    n.cabin = filt('lowpass', 5200, 0.5); n.cabin.connect(n.master);
+
+    // --- engine: two voices sharing the firing pattern
+    n.oscA = ctx.createOscillator(); n.oscA.setPeriodicWave(engineWave(false));
+    n.oscB = ctx.createOscillator(); n.oscB.setPeriodicWave(engineWave(true));
+    n.gA = gain(0.8); n.gB = gain(0);
+    const shaper = ctx.createWaveShaper();
+    const curve = new Float32Array(1024); for (let i = 0; i < 1024; i++) { const x = i / 511.5 - 1; curve[i] = Math.tanh(x * 1.6); }
+    shaper.curve = curve;
+    n.oscA.connect(n.gA); n.oscB.connect(n.gB); n.gA.connect(shaper); n.gB.connect(shaper);
+    // intake / exhaust / body resonances
+    const f1 = filt('peaking', 95, 1.2, 5), f2 = filt('peaking', 240, 2, 6), f3 = filt('peaking', 520, 3, 4),
+      f4 = filt('peaking', 1150, 4, 3), f5 = filt('peaking', 2400, 3, 2);
+    n.engLP = filt('lowpass', 900, 0.7);
+    n.engG = gain(0);
+    shaper.connect(f1); f1.connect(f2); f2.connect(f3); f3.connect(f4); f4.connect(f5); f5.connect(n.engLP); n.engLP.connect(n.engG); n.engG.connect(n.cabin);
+
+    // --- noise bed
+    const buf = ctx.createBuffer(1, ctx.sampleRate * 3, ctx.sampleRate);
     const d = buf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
-    const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
-    const road = ctx.createBiquadFilter(); road.type = 'bandpass'; road.frequency.value = 700; road.Q.value = 0.6;
-    noiseG = ctx.createGain(); noiseG.gain.value = 0;
-    const wind = ctx.createBiquadFilter(); wind.type = 'lowpass'; wind.frequency.value = 380;
-    windG = ctx.createGain(); windG.gain.value = 0;
-    src.connect(road); road.connect(noiseG); noiseG.connect(master);
-    src.connect(wind); wind.connect(windG); windG.connect(master);
-    eng1.start(); eng2.start(); whine.start(); src.start();
+    const noise = ctx.createBufferSource(); noise.buffer = buf; noise.loop = true;
+    // combustion: hiss chopped at the firing rate
+    const combBP = filt('bandpass', 1900, 0.6);
+    n.combAM = gain(0.5); n.fire = ctx.createOscillator(); n.fire.type = 'sine';
+    const fireDepth = gain(0.5); n.fire.connect(fireDepth); fireDepth.connect(n.combAM.gain);
+    n.combG = gain(0);
+    noise.connect(combBP); combBP.connect(n.combAM); n.combAM.connect(n.combG); n.combG.connect(n.cabin);
+    // intake roar under load
+    n.intakeBP = filt('bandpass', 420, 1.1); n.intakeG = gain(0);
+    noise.connect(n.intakeBP); n.intakeBP.connect(n.intakeG); n.intakeG.connect(n.cabin);
+    // tyres on tar, wind round the mirrors
+    n.roadBP = filt('bandpass', 760, 0.5); n.roadG = gain(0);
+    noise.connect(n.roadBP); n.roadBP.connect(n.roadG); n.roadG.connect(n.master);
+    const roadLow = filt('lowpass', 140, 0.7); n.roadLowG = gain(0);
+    noise.connect(roadLow); roadLow.connect(n.roadLowG); n.roadLowG.connect(n.master);
+    n.windBP = filt('bandpass', 1500, 0.4); n.windG = gain(0);
+    noise.connect(n.windBP); n.windBP.connect(n.windG); n.windG.connect(n.master);
+
+    // --- CVT belt whine and rumble-strip thump
+    n.whine = ctx.createOscillator(); n.whine.type = 'sine'; n.whine2 = ctx.createOscillator(); n.whine2.type = 'sine';
+    n.whineG = gain(0); const w2 = gain(0.4);
+    n.whine.connect(n.whineG); n.whine2.connect(w2); w2.connect(n.whineG); n.whineG.connect(n.cabin);
+    n.strip = ctx.createOscillator(); n.strip.type = 'square'; n.stripG = gain(0);
+    const stripLP = filt('lowpass', 220, 0.7);
+    n.strip.connect(stripLP); stripLP.connect(n.stripG); n.stripG.connect(n.master);
+
+    [n.oscA, n.oscB, n.fire, n.whine, n.whine2, n.strip, noise].forEach((o) => o.start());
   }
-  function setOn(v) {
+
+  // starter motor, then the engine catching and settling to idle
+  function crank() {
+    const t = ctx.currentTime;
+    crankUntil = t + 0.85; flare = 1;
+    const o = ctx.createOscillator(), g = gain(0), bp = filt('bandpass', 900, 2);
+    o.type = 'sawtooth'; o.frequency.setValueAtTime(330, t); o.frequency.linearRampToValueAtTime(410, t + 0.8);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.11, t + 0.05); g.gain.setValueAtTime(0.11, t + 0.78); g.gain.linearRampToValueAtTime(0, t + 0.9);
+    o.connect(bp); bp.connect(g); g.connect(n.master); o.start(t); o.stop(t + 0.95);
+  }
+
+  function setOn(v, withCrank) {
     on = v;
     if (on && !ctx) { try { build(); } catch (e) { on = false; } }
-    if (ctx) { ctx.resume && ctx.resume(); master.gain.setTargetAtTime(on ? 0.5 : 0, ctx.currentTime, 0.08); }
+    if (ctx) {
+      if (ctx.resume) ctx.resume();
+      n.master.gain.setTargetAtTime(on ? 0.7 : 0, ctx.currentTime, 0.08);
+      if (on && withCrank && !started) { started = true; crank(); }
+    }
     const b = $('#soundBtn'); b.textContent = on ? 'Sound on' : 'Sound off'; b.setAttribute('aria-pressed', String(on));
   }
-  function update() {
+
+  function update(dt) {
     if (!ctx || !on) return;
-    const t = ctx.currentTime, rpm = toRpm(S.we);
-    const fire = rpm / 30;
-    eng1.frequency.setTargetAtTime(fire, t, 0.03);
-    eng2.frequency.setTargetAtTime(fire / 2, t, 0.03);
-    engF.frequency.setTargetAtTime(260 + S.thEff * 1800 + rpm * 0.25, t, 0.05);
-    engG.gain.setTargetAtTime(0.09 + S.thEff * 0.22 + (S.limiter ? 0.05 : 0), t, 0.05);
-    whine.frequency.setTargetAtTime(toRpm(S.wt) / 60 * 13 + 120, t, 0.05);
-    whineG.gain.setTargetAtTime(S.mode === 'N' ? 0 : Math.min(0.018, S.v / 900) * (0.4 + S.thEff), t, 0.1);
-    noiseG.gain.setTargetAtTime(Math.min(0.12, S.v / 300) * (S.offroad ? 2.6 : 1), t, 0.1);
-    windG.gain.setTargetAtTime(Math.min(0.35, (S.v / 55) ** 2 * 0.3), t, 0.1);
+    const t = ctx.currentTime, set = (param, v, tc = 0.04) => param.setTargetAtTime(v, t, tc);
+    let rpm = toRpm(S.we), load = S.thEff;
+    if (t < crankUntil) { rpm = 240 + 40 * Math.sin(t * 38); load = 0.5; }
+    else if (flare > 0) { flare = Math.max(0, flare - dt * 1.4); rpm += 550 * flare; load = Math.max(load, 0.25 * flare); }
+    const rn = clamp(rpm / CAR.redline, 0, 1.1);
+    // idle lumpiness fades out as revs rise
+    jitter = jitter * 0.9 + (Math.random() - 0.5) * 0.1;
+    const cyc = rpm / 120 * (1 + jitter * 0.05 * (1 - Math.min(1, rpm / 2500)));
+    const overrun = S.fuelCut || S.limiter;
+
+    if (custom) {
+      set(n.engG.gain, 0, 0.05); set(n.combG.gain, 0, 0.05);
+      set(custom.src.playbackRate, clamp(rpm / custom.baseRpm, 0.3, 4), 0.05);
+      set(custom.g.gain, 0.3 + 0.6 * load, 0.06);
+    } else {
+      set(n.oscA.frequency, cyc, 0.03); set(n.oscB.frequency, cyc, 0.03); set(n.fire.frequency, rpm / 30, 0.03);
+      set(n.gA.gain, 0.95 - 0.4 * load); set(n.gB.gain, load * (0.25 + 0.75 * rn));
+      set(n.engLP.frequency, overrun ? 500 + rpm * 0.12 : 620 + 3600 * load + rpm * 0.3, 0.06);
+      set(n.engG.gain, (0.16 + 0.5 * Math.pow(load, 0.8) + 0.14 * rn) * (overrun ? 0.55 : 1), 0.05);
+      set(n.combG.gain, 0.012 + 0.05 * load * (0.4 + rn), 0.06);
+    }
+    set(n.intakeBP.frequency, 300 + rpm * 0.09, 0.08);
+    set(n.intakeG.gain, 0.22 * load * load * (0.3 + rn), 0.08);
+
+    const v = S.v;
+    set(n.whine.frequency, toRpm(S.wt) / 60 * 11 + 90, 0.05); set(n.whine2.frequency, (toRpm(S.wt) / 60 * 11 + 90) * 2.01, 0.05);
+    set(n.whineG.gain, S.mode === 'N' ? 0 : Math.min(0.014, v / 1400) * (0.35 + load), 0.1);
+    const gravel = S.offroad && v > 1;
+    set(n.roadBP.frequency, gravel ? 1500 : 620 + v * 9, 0.1);
+    set(n.roadG.gain, Math.min(0.16, v / 260) * (gravel ? 2.8 : 1), 0.1);
+    set(n.roadLowG.gain, Math.min(0.5, v / 70) * (gravel ? 1.6 : 0.8), 0.1);
+    set(n.windBP.frequency, 900 + v * 28, 0.2);
+    set(n.windG.gain, Math.min(0.2, (v / 50) ** 2 * 0.13), 0.15);
+    const ax = Math.abs(S.playerX), onStrip = ax > 0.99 && ax < 1.12 && v > 3;
+    set(n.strip.frequency, clamp(v / 0.42, 18, 110), 0.03);
+    set(n.stripG.gain, onStrip ? 0.3 : 0, 0.03);
   }
+
   function bump() {
     if (!ctx || !on) return;
     const o = ctx.createOscillator(), g = ctx.createGain(), t = ctx.currentTime;
     o.type = 'triangle'; o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(40, t + 0.25);
     g.gain.setValueAtTime(0.6, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
-    o.connect(g); g.connect(master); o.start(t); o.stop(t + 0.32);
+    o.connect(g); g.connect(n.master); o.start(t); o.stop(t + 0.32);
   }
-  return { start: () => setOn(true), toggle: () => setOn(!on), update, bump };
+
+  // Use the driver's own recording: loop it and re-pitch it with engine speed.
+  async function loadRecording(file, baseRpm) {
+    if (!ctx) build();
+    const data = await file.arrayBuffer();
+    const src = await ctx.decodeAudioData(data);
+    const sr = src.sampleRate, len = Math.min(src.length, Math.floor(sr * 12)), fade = Math.min(Math.floor(sr * 0.12), Math.floor(len / 4));
+    if (len < sr * 0.5) throw new Error('short');
+    const out = ctx.createBuffer(src.numberOfChannels, len - fade, sr);
+    for (let c = 0; c < src.numberOfChannels; c++) {
+      const a = src.getChannelData(c), o = out.getChannelData(c);
+      for (let i = 0; i < len - fade; i++) o[i] = a[i];
+      for (let i = 0; i < fade; i++) { const k = i / fade; o[i] = a[i] * k + a[len - fade + i] * (1 - k); }  // seamless loop
+    }
+    clearRecording();
+    const node = ctx.createBufferSource(); node.buffer = out; node.loop = true;
+    const g = gain(0); node.connect(g); g.connect(n.cabin); node.start();
+    custom = { src: node, g, baseRpm: clamp(baseRpm || 2000, 600, 6500) };
+    return out.duration;
+  }
+  function clearRecording() {
+    if (!custom) return;
+    try { custom.src.stop(); } catch (e) { /* already stopped */ }
+    custom.g.disconnect(); custom = null;
+  }
+  return { start: () => setOn(true, true), toggle: () => setOn(!on, false), update, bump, loadRecording, clearRecording, setBaseRpm: (r) => { if (custom) custom.baseRpm = clamp(r || 2000, 600, 6500); } };
 })();
 const sfxBump = () => audio.bump();
 $('#soundBtn').addEventListener('click', (e) => { audio.toggle(); e.currentTarget.blur(); });
+$('#recFile').addEventListener('change', async (e) => {
+  const file = e.target.files && e.target.files[0], status = $('#recStatus');
+  if (!file) return;
+  status.textContent = 'Loading…';
+  try {
+    const secs = await audio.loadRecording(file, Number($('#recRpm').value));
+    status.textContent = `Using your recording (${secs.toFixed(1)} s loop).`;
+    $('#recClear').hidden = false;
+  } catch (err) {
+    status.textContent = err && err.message === 'short' ? 'That clip is under half a second. Use a longer recording.' : 'That file could not be read as audio. Try an MP3, M4A or WAV.';
+  }
+  e.target.value = '';
+});
+$('#recRpm').addEventListener('change', (e) => audio.setBaseRpm(Number(e.target.value)));
+$('#recClear').addEventListener('click', (e) => { audio.clearRecording(); e.currentTarget.hidden = true; $('#recStatus').textContent = 'Built-in sound restored.'; });
 
 /* ============================================================ canvases */
 const roadC = $('#road'), roadG = roadC.getContext('2d');
@@ -1652,7 +1816,7 @@ function frame(now) {
   drawCVT(paused ? 0 : dt);
   hudAcc += dt;
   if (hudAcc > 0.1) { hudAcc = 0; updateHud(); }
-  audio.update();
+  audio.update(dt);
   requestAnimationFrame(frame);
 }
 
