@@ -79,7 +79,7 @@ button:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
 .tool[aria-pressed="true"] { color: var(--belt); border-color: var(--belt); }
 
 /* ---------- stage */
-.stage { position: relative; min-height: 0; overflow: hidden; background: #c9d6dc; }
+.stage { position: relative; min-height: 0; overflow: hidden; background: #d9d6c4; }
 #road { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 
 .hud-tl {
@@ -290,7 +290,6 @@ kbd {
       <div class="chip" id="lapChip">Lap <b>1</b> · <b>0.00</b> km</div>
     </div>
     <div class="lamps" aria-hidden="true">
-      <span class="lamp a" id="lmLaunch">Launch gear</span>
       <span class="lamp g" id="lmLock">Lock-up</span>
       <span class="lamp a" id="lmTcs">TCS</span>
       <span class="lamp c" id="lmCut">Fuel cut</span>
@@ -312,17 +311,17 @@ kbd {
 
     <div class="overlay" id="overlay">
       <div class="card" role="dialog" aria-labelledby="ovTitle">
-        <h2 id="ovTitle">Corolla Cross CVT test drive</h2>
-        <p>You're driving a car built to Corolla Cross 2.0 figures. Its CVT pulls away on a real launch gear, then hands over to a steel belt running between two pulleys. The pulley halves slide apart and together, so the ratio changes smoothly. Watch the diagram at the bottom: engine speed holds steady while road speed climbs.</p>
+        <h2 id="ovTitle">Corolla Cross 1.8 CVT &middot; South Africa</h2>
+        <p>You're driving a car built to the figures of the South African Corolla Cross 1.8 petrol. Its CVT has no fixed gears: a steel belt runs between two pulleys whose halves slide apart and together, so the ratio changes smoothly. Watch the diagram at the bottom: engine speed holds steady while road speed climbs. Traffic keeps left; overtake on the right.</p>
         <div class="spec" aria-label="Vehicle specification">
-          <div><span>Engine</span><b>2.0 L Dynamic Force I4 (M20A-FKS)</b></div>
-          <div><span>Power</span><b>169 hp / 126 kW at 6,600 rpm</b></div>
-          <div><span>Torque</span><b>150 lb-ft / 203 Nm at 4,400&ndash;4,800 rpm</b></div>
-          <div><span>Transmission</span><b>Direct Shift-CVT with launch gear</b></div>
-          <div><span>Ratios</span><b>Launch 3.377 &middot; belt 2.236&ndash;0.447</b></div>
-          <div><span>Final drive</span><b>3.605 (estimate)</b></div>
-          <div><span>Weight, tyres</span><b>1,415 kg FWD &middot; 215/65 R17</b></div>
-          <div><span>Drag</span><b>Cd 0.31</b></div>
+          <div><span>Engine</span><b>1.8 L Dual VVT-i I4 (2ZR)</b></div>
+          <div><span>Power</span><b>103 kW at 6,400 rpm</b></div>
+          <div><span>Torque</span><b>172 Nm at 4,000 rpm</b></div>
+          <div><span>Transmission</span><b>CVT, 7-step manual mode, FWD</b></div>
+          <div><span>Belt ratios</span><b>2.480&ndash;0.396 (estimate)</b></div>
+          <div><span>Final drive</span><b>5.698 (estimate)</b></div>
+          <div><span>Weight, tyres</span><b>~1,365 kg &middot; 215/60 R17</b></div>
+          <div><span>Claimed fuel</span><b>6.8 L/100 km &middot; 47 L tank</b></div>
         </div>
         <div class="cols">
           <div>
@@ -344,13 +343,13 @@ kbd {
             <ul class="modelist">
               <li><b>D</b><span>Holds the engine low for economy and lets revs rise with the pedal.</span></li>
               <li><b>S</b><span>Holds 2,500 rpm or more for quick response and stronger engine braking.</span></li>
-              <li><b>M</b><span>Ten fixed steps you choose: the launch gear, then nine belt ratios.</span></li>
+              <li><b>M</b><span>Seven fixed ratio steps you choose, like a stepped gearbox.</span></li>
               <li><b>N</b><span>Engine disconnected from the wheels. Rev it freely.</span></li>
             </ul>
             <h3 style="margin-top:14px">Goals</h3>
             <ul class="goal-list">
-              <li>Sprint: 0&ndash;100 km/h in under 9.5 s</li>
-              <li>Hypermiler: one full km at 6.2 L/100 km or less, averaging 70 km/h or more</li>
+              <li>Sprint: 0&ndash;100 km/h in under 10.3 s</li>
+              <li>Hypermiler: one full km at 6.0 L/100 km or less, averaging 70 km/h or more</li>
               <li>Clean 5: 5 km without hitting traffic or leaving the road</li>
             </ul>
           </div>
@@ -428,27 +427,28 @@ function shade(hex, amt) {
 }
 
 /* ============================================================ vehicle model */
-// Toyota Corolla Cross 2.0 (gasoline, FWD): M20A-FKS "Dynamic Force" 2.0 L four-cylinder
-// with Toyota's Direct Shift-CVT, which pulls away on a physical launch gear and then
-// hands over to the steel belt. Published figures: 169 hp (126 kW) at 6,600 rpm and
-// 150 lb-ft (203 Nm) at 4,400-4,800 rpm. Final drive and inertia values are estimates.
+// Toyota Corolla Cross 1.8 petrol CVT, South African build (Prospecton, Durban): 2ZR 1.8 L
+// Dual VVT-i four-cylinder, front-wheel drive, belt CVT with a torque converter and a 7-step
+// sequential mode. Toyota South Africa quotes 103 kW at 6,400 rpm and 172 Nm at 4,000 rpm,
+// 215/60 R17 tyres and 6.8 L/100 km combined. Toyota SA does not publish the CVT's internal
+// ratios, so the belt range and final drive below are estimates for Toyota's 1.8 L CVT.
 const CAR = {
-  name: 'Corolla Cross 2.0 FWD',
-  mass: 1490,                    // ~1,415 kg curb weight + driver
-  wheelR: 0.345,                 // 215/65 R17 rolling radius
-  finalDrive: 3.605, eff: 0.88,
-  cdA: 0.31 * 2.55, crr: 0.011, mu: 1.0, frontWeight: 0.6,
-  ie: 0.2,                       // engine + primary pulley inertia, kg·m²
-  idle: 750, redline: 6800, maxRpm: 8000,
-  launchRatio: 3.377,            // launch gear, used from standstill
-  rLow: 2.236, rHigh: 0.447,     // belt ratio range
-  // M mode: launch gear plus nine belt steps
-  manual: [3.377, 2.236, 1.829, 1.496, 1.224, 1.001, 0.819, 0.670, 0.548, 0.447],
+  name: 'Corolla Cross 1.8 XS CVT (South Africa)',
+  mass: 1440,                    // ~1,365 kg kerb weight + driver
+  wheelR: 0.335,                 // 215/60 R17 rolling radius
+  finalDrive: 5.698, eff: 0.84,
+  cdA: 0.32 * 2.55, crr: 0.011, mu: 1.0, frontWeight: 0.6,
+  ie: 0.18,                      // engine + primary pulley inertia, kg·m²
+  idle: 750, redline: 6600, maxRpm: 8000,
+  launchRatio: null,             // no launch gear: the belt does all the work
+  rLow: 2.480, rHigh: 0.396,     // belt ratio range
+  // M mode: seven fixed steps
+  manual: [2.480, 1.899, 1.454, 1.113, 0.852, 0.653, 0.500],
 };
-CAR.kc = 203 / Math.pow(2400 * Math.PI / 30, 2); // converter capacity: stalls near 2,400 rpm under full torque
-// Full-load torque, Nm. Peak 203 Nm across 4,400-4,800 rpm; 126 kW at 6,600 rpm.
-const TQ = [[0, 120], [1000, 150], [1500, 165], [2000, 176], [2500, 184], [3000, 189], [3500, 194], [4000, 199],
-  [4400, 203], [4800, 203], [5200, 200], [5600, 196], [6000, 191], [6600, 182], [7000, 165], [8000, 100]];
+CAR.kc = 172 / Math.pow(2300 * Math.PI / 30, 2); // converter capacity: stalls near 2,300 rpm under full torque
+// Full-load torque, Nm. Peak 172 Nm at 4,000 rpm; 103 kW at 6,400 rpm.
+const TQ = [[0, 105], [1000, 128], [1500, 140], [2000, 150], [2500, 158], [3000, 164], [3500, 169], [4000, 172],
+  [4500, 171], [5000, 168], [5500, 164], [6000, 159], [6400, 154], [6800, 140], [7200, 120], [8000, 80]];
 function torqueFull(rpm) {
   if (rpm <= 0) return TQ[0][1];
   for (let i = 1; i < TQ.length; i++) {
@@ -456,7 +456,7 @@ function torqueFull(rpm) {
   }
   return TQ[TQ.length - 1][1];
 }
-const frictionT = (rpm) => 11 + 27 * (rpm / 6800) ** 2;
+const frictionT = (rpm) => 10 + 25 * (rpm / 6600) ** 2;
 const toRpm = (w) => w * 30 / Math.PI;
 const toW = (rpm) => rpm * Math.PI / 30;
 
@@ -520,21 +520,35 @@ function makeSprite(w, h, draw) {
 }
 function rrect(g, x, y, w, h, r) { g.beginPath(); g.roundRect ? g.roundRect(x, y, w, h, r) : g.rect(x, y, w, h); }
 const SPR = {};
-SPR.pine = makeSprite(120, 220, (g) => {
-  g.fillStyle = '#5a3f2b'; g.fillRect(52, 170, 16, 50);
-  const tiers = [[60, 10, 34, 80], [60, 50, 46, 140], [60, 95, 58, 190]];
-  tiers.forEach(([cx, top, half, bot]) => {
-    g.fillStyle = '#2f5a3a'; g.beginPath(); g.moveTo(cx, top); g.lineTo(cx + half, bot); g.lineTo(cx - half, bot); g.closePath(); g.fill();
-    g.fillStyle = '#3d7148'; g.beginPath(); g.moveTo(cx, top); g.lineTo(cx - half, bot); g.lineTo(cx - half * 0.15, bot); g.closePath(); g.fill();
-  });
+// Umbrella thorn: thin forked trunk under a wide, flat canopy.
+SPR.thorn = makeSprite(220, 170, (g) => {
+  g.strokeStyle = '#4a3a2c'; g.lineCap = 'round';
+  g.lineWidth = 9; g.beginPath(); g.moveTo(110, 170); g.lineTo(108, 110); g.stroke();
+  g.lineWidth = 6; g.beginPath(); g.moveTo(108, 112); g.quadraticCurveTo(80, 90, 62, 62); g.moveTo(108, 112); g.quadraticCurveTo(132, 88, 156, 60); g.moveTo(108, 100); g.lineTo(112, 58); g.stroke();
+  const layers = [[110, 52, 104, 20, '#55602f'], [110, 42, 92, 18, '#66733a'], [100, 34, 64, 13, '#738142']];
+  layers.forEach(([x, y, rx, ry, c]) => { g.fillStyle = c; g.beginPath(); g.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2); g.fill(); });
+  g.fillStyle = 'rgba(40,46,22,.35)'; g.beginPath(); g.ellipse(110, 62, 96, 7, 0, 0, Math.PI * 2); g.fill();
 });
-SPR.oak = makeSprite(170, 200, (g) => {
-  g.fillStyle = '#5d4330'; g.fillRect(76, 120, 18, 80);
-  const blobs = [[85, 70, 55, '#4a7a3c'], [50, 95, 40, '#43703a'], [122, 92, 42, '#40693a'], [86, 40, 38, '#5a8c46'], [62, 60, 30, '#5f9449']];
+// Round bushveld tree.
+SPR.marula = makeSprite(170, 190, (g) => {
+  g.fillStyle = '#5b4834'; g.fillRect(76, 110, 18, 80);
+  const blobs = [[85, 72, 54, '#5e6a35'], [50, 94, 38, '#56612f'], [122, 92, 40, '#525d2e'], [86, 44, 36, '#6c7a3e'], [60, 62, 28, '#717f44']];
   blobs.forEach(([x, y, r, c]) => { g.fillStyle = c; g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill(); });
 });
+// Aloe with an orange flower spike.
+SPR.aloe = makeSprite(80, 120, (g) => {
+  g.strokeStyle = '#6e7f4e'; g.lineWidth = 3;
+  g.beginPath(); g.moveTo(40, 70); g.lineTo(40, 18); g.stroke();
+  g.fillStyle = '#e8743a'; g.beginPath(); g.ellipse(40, 16, 6, 15, 0, 0, Math.PI * 2); g.fill();
+  g.fillStyle = '#7a8c58';
+  for (let i = 0; i < 9; i++) {
+    const a = Math.PI * (0.08 + i * 0.105);
+    g.beginPath(); g.moveTo(40 - 6, 118); g.lineTo(40 + 6, 118);
+    g.lineTo(40 - Math.cos(a) * 40, 118 - Math.sin(a) * 52); g.closePath(); g.fill();
+  }
+});
 SPR.bush = makeSprite(120, 64, (g) => {
-  [[30, 42, 26, '#4d7a3f'], [62, 34, 32, '#578a46'], [94, 44, 24, '#4a743c']].forEach(([x, y, r, c]) => {
+  [[30, 42, 26, '#6b7240'], [62, 34, 32, '#757d46'], [94, 44, 24, '#666d3c']].forEach(([x, y, r, c]) => {
     g.fillStyle = c; g.beginPath(); g.arc(x, y, r, Math.PI, 0); g.lineTo(x + r, 64); g.lineTo(x - r, 64); g.fill();
   });
 });
@@ -599,8 +613,8 @@ function carSprite(body, lit, res = 1) {
     g.shadowBlur = 0;
     g.fillStyle = 'rgba(255,255,255,.55)'; g.fillRect(14, 73, 10, 3); g.fillRect(166, 73, 10, 3);
     // plate
-    g.fillStyle = '#eef0e6'; rrect(g, 70, 88, 50, 15, 3); g.fill();
-    g.fillStyle = '#20262d'; g.font = `700 11px ${FONT_D}`; g.textAlign = 'center'; g.fillText('CVT 26', 95, 100);
+    g.fillStyle = '#eef0e6'; rrect(g, 64, 88, 62, 15, 3); g.fill();
+    g.fillStyle = '#20262d'; g.font = `700 10px ${FONT_D}`; g.textAlign = 'center'; g.fillText('CVT 26 GP', 95, 100);
   });
 }
 const TRAFFIC_COLORS = ['#c8ccd0', '#2f3e57', '#8a2f2b', '#e3e1da', '#4a5a40', '#6c6f75', '#b78a2e', '#1f2226'];
@@ -635,8 +649,8 @@ function suvSprite(body, lit, res = 1) {
     g.shadowBlur = 0;
     // badge and plate
     g.fillStyle = 'rgba(230,234,238,.75)'; g.beginPath(); g.ellipse(95, 94, 9, 6, 0, 0, Math.PI * 2); g.fill();
-    g.fillStyle = '#eef0e6'; rrect(g, 70, 104, 50, 15, 3); g.fill();
-    g.fillStyle = '#20262d'; g.font = `700 11px ${FONT_D}`; g.textAlign = 'center'; g.fillText('CVT 26', 95, 116);
+    g.fillStyle = '#eef0e6'; rrect(g, 64, 104, 62, 15, 3); g.fill();
+    g.fillStyle = '#20262d'; g.font = `700 10px ${FONT_D}`; g.textAlign = 'center'; g.fillText('CVT 26 GP', 95, 116);
     // black cladding and skid plate
     g.fillStyle = '#1d2125'; rrect(g, 3, 120, 184, 22, 9); g.fill();
     g.fillStyle = '#7d858c'; rrect(g, 60, 132, 70, 7, 3); g.fill();
@@ -646,7 +660,7 @@ function suvSprite(body, lit, res = 1) {
 let PLAYER_SPR = [suvSprite(PLAYER_COL, false, 2), suvSprite(PLAYER_COL, true, 2)];
 
 // Sprite sizes in metres (width).
-const SIZE = { pine: 4.2, oak: 5.4, bush: 2.6, post: 0.16, km: 0.62, grade: 1.25, gantry: 2 * ROAD_W * 1.25, car: 1.9 };
+const SIZE = { thorn: 7.5, marula: 5.4, aloe: 1.0, bush: 2.6, post: 0.16, km: 0.62, grade: 1.25, gantry: 2 * ROAD_W * 1.25, car: 1.9 };
 
 function placeSprites() {
   const rnd = mulberry(2611);
@@ -656,28 +670,29 @@ function placeSprites() {
     const density = 0.32 + 0.25 * Math.sin(i / 90);
     if (rnd() < density) {
       const side = rnd() < 0.5 ? -1 : 1;
-      const kind = rnd() < 0.55 ? 'pine' : 'oak';
-      seg.sprites.push({ img: SPR[kind], w: SIZE[kind] * (0.8 + rnd() * 0.45), off: side * (1.75 + rnd() * 3.6) });
+      const kind = rnd() < 0.6 ? 'thorn' : 'marula';
+      seg.sprites.push({ img: SPR[kind], w: SIZE[kind] * (0.8 + rnd() * 0.45), off: side * (2.1 + rnd() * 3.6) });
     }
     if (rnd() < 0.12) {
       const side = rnd() < 0.5 ? -1 : 1;
-      seg.sprites.push({ img: SPR.bush, w: SIZE.bush * (0.8 + rnd() * 0.5), off: side * (1.4 + rnd() * 0.6) });
+      const aloe = rnd() < 0.45;
+      seg.sprites.push({ img: aloe ? SPR.aloe : SPR.bush, w: (aloe ? SIZE.aloe : SIZE.bush) * (0.8 + rnd() * 0.5), off: side * (1.4 + rnd() * 0.6) });
     }
   }
   const perKm = 1000 / SEG;
-  for (let k = 1; k * perKm < N; k++) segments[Math.round(k * perKm)].sprites.push({ img: kmSprite(k), w: SIZE.km, off: 1.32 });
-  gradeSigns.forEach((s) => segments[s.idx].sprites.push({ img: gradeSprite(s.pct), w: SIZE.grade, off: 1.38 }));
+  for (let k = 1; k * perKm < N; k++) segments[Math.round(k * perKm)].sprites.push({ img: kmSprite(k), w: SIZE.km, off: -1.32 });
+  gradeSigns.forEach((s) => segments[s.idx].sprites.push({ img: gradeSprite(s.pct), w: SIZE.grade, off: -1.38 }));
   segments[9].sprites.push({ img: SPR.gantry, w: SIZE.gantry, off: 0, center: true });
 }
 placeSprites();
 
 /* ============================================================ scenery colors */
 const SC = {
-  skyTop: hexRgb('#5c87ad'), skyLow: hexRgb('#d9dccf'), fog: hexRgb('#cfd5cc'),
-  grassA: hexRgb('#6e9a4d'), grassB: hexRgb('#66914a'),
+  skyTop: hexRgb('#3f7fc0'), skyLow: hexRgb('#dfe3dc'), fog: hexRgb('#d9d6c4'),
+  grassA: hexRgb('#a49a5c'), grassB: hexRgb('#9b9155'),
   roadA: hexRgb('#5d6167'), roadB: hexRgb('#595d63'),
   rumbleA: hexRgb('#e7e9ea'), rumbleB: hexRgb('#b8423a'),
-  lane: hexRgb('#eceee8'), edge: hexRgb('#dfe2e0'),
+  lane: hexRgb('#eceee8'), edge: hexRgb('#f2c230'),   // SA yellow edge lines
 };
 const fogMix = (c, f) => rgbStr(mixRgb(SC.fog, c, f));
 
@@ -696,15 +711,15 @@ function ridgeStrip(seed, color, amp, base) {
     pts.forEach(([x, y]) => g.lineTo(x, y)); g.lineTo(w, h); g.closePath(); g.fill();
   });
 }
-const RIDGE_FAR = ridgeStrip(7, '#9fb0b9', 60, 140);
-const RIDGE_NEAR = ridgeStrip(19, '#7f977f', 40, 175);
+const RIDGE_FAR = ridgeStrip(7, '#a9a8a4', 60, 140);
+const RIDGE_NEAR = ridgeStrip(19, '#8f8a5c', 40, 175);
 
 /* ============================================================ state */
 const S = {
   v: 0, we: toW(750), r: CAR.rLow, rTarget: CAR.rLow, targetRpm: 800,
-  mode: 'D', mStep: 0, locked: false, lockup: 0, launch: true, handoverFlash: 0,
+  mode: 'D', mStep: 0, locked: false, lockup: 0, launch: !!CAR.launchRatio, handoverFlash: 0,
   thEff: 0, fuelCut: false, limiter: false, tcs: false,
-  position: 0, playerX: 0.5, grade: 0, offroad: false,
+  position: 0, playerX: -0.5, grade: 0, offroad: false,
   temp: 72, limp: false,
   fuelLps: 0, power: 0, tripFuel: 0, tripDist: 0, tripTime: 0,
   lap: 1, lapTime: 0,
@@ -768,10 +783,10 @@ function updateRatio(dt, th) {
   const vk = S.v * 3.6;
   let tgt = null, rate = 1.1;
   if (S.mode === 'D') {
-    tgt = th > 0.03 ? Math.min(6300, 1100 + 5000 * Math.pow(th, 2.2) + 4 * vk * th) : (input.brake > 0.05 ? 1500 : 1100);
+    tgt = th > 0.03 ? Math.min(6100, 1100 + 4800 * Math.pow(th, 2.2) + 4 * vk * th) : (input.brake > 0.05 ? 1500 : 1100);
     rate = 1.1;
   } else if (S.mode === 'S') {
-    tgt = th > 0.03 ? Math.min(6600, 2500 + 4100 * th) : 2700;
+    tgt = th > 0.03 ? Math.min(6400, 2500 + 3900 * th) : 2700;
     rate = 2.4;
   }
   if (S.mode === 'M') {
@@ -779,7 +794,7 @@ function updateRatio(dt, th) {
     if (S.locked && rpm < 1250 && S.mStep > 0) S.mStep--;
     if (rpm > CAR.redline - 150 && S.mStep < CAR.manual.length - 1 && S.locked) S.mStep++;
     if (S.v < 2.5) S.mStep = 0;
-    S.launch = S.mStep === 0;
+    S.launch = !!CAR.launchRatio && S.mStep === 0;
     S.rTarget = S.launch ? CAR.rLow : CAR.manual[S.mStep];
     rate = 5;
     S.targetRpm = toRpm(wWheel * CAR.finalDrive * CAR.manual[S.mStep]);
@@ -787,8 +802,11 @@ function updateRatio(dt, th) {
     // Direct Shift-CVT: pull away on the launch gear, hand over to the belt once rolling.
     // Harder throttle holds the launch gear longer.
     const handover = (S.mode === 'S' ? 30 : 22) + 34 * th * th;
-    if (S.launch && vk > handover) { S.launch = false; S.handoverFlash = 0.8; }
-    if (!S.launch && vk < 14) S.launch = true;
+    if (!CAR.launchRatio) S.launch = false;
+    else {
+      if (S.launch && vk > handover) { S.launch = false; S.handoverFlash = 0.8; }
+      if (!S.launch && vk < 14) S.launch = true;
+    }
     if (tgt != null) {
       S.targetRpm = tgt;
       S.rTarget = !S.launch && wWheel > 0.5 ? clamp(toW(tgt) / (wWheel * CAR.finalDrive), CAR.rHigh, CAR.rLow) : CAR.rLow;
@@ -908,8 +926,9 @@ const cars = [];
 (function spawnTraffic() {
   const rnd = mulberry(77);
   for (let i = 0; i < 24; i++) {
-    const lane = rnd() < 0.55 ? 0.5 : -0.5;
-    const desired = (lane > 0 ? 68 : 88) / 3.6 + rnd() * 22 / 3.6;
+    // South Africa keeps left: slower traffic in the left lane, overtaking on the right
+    const lane = rnd() < 0.55 ? -0.5 : 0.5;
+    const desired = (lane < 0 ? 68 : 88) / 3.6 + rnd() * 22 / 3.6;
     cars.push({ z: 260 + (i / 24) * (TRACK_LEN - 400) + rnd() * 120, off: lane, lane, v: desired, desired, spr: TRAFFIC_SPR[i % TRAFFIC_SPR.length], braking: false, cool: 0 });
   }
 })();
@@ -967,7 +986,7 @@ function updateRecords(dt) {
     const best = REC.best0100 == null || run.t < REC.best0100;
     if (best) REC.best0100 = run.t;
     toast(`0–100 km/h in ${run.t.toFixed(2)} s${best ? ' · new best' : ''}`, best ? 'good' : '');
-    if (run.t < 9.5) completeGoal('sprint', 'Sprint goal complete');
+    if (run.t < 10.3) completeGoal('sprint', 'Sprint goal complete');
     store.set('cvt-records', REC);
   }
   if (!run.done400 && run.d >= 400) {
@@ -986,7 +1005,7 @@ function updateGoals() {
     const l100 = fuel * 100, avg = 3600 / time;
     eco.lastKm = km; eco.fuel0 = S.tripFuel; eco.time0 = S.tripTime;
     toast(`Km ${km}: ${l100.toFixed(1)} L/100 km at ${fmt(avg)} km/h`, '');
-    if (l100 <= 6.2 && avg >= 70) completeGoal('eco', 'Hypermiler goal complete');
+    if (l100 <= 6.0 && avg >= 70) completeGoal('eco', 'Hypermiler goal complete');
   }
   if (cleanDist >= 5000) completeGoal('clean', 'Clean 5 goal complete');
 }
@@ -1042,7 +1061,7 @@ function setCruise(on) {
   $('#cruiseBtn').setAttribute('aria-pressed', String(!!on));
 }
 function resetCar() {
-  S.v = 0; S.position = 0; S.playerX = 0.5; S.r = CAR.rLow; S.we = toW(750); S.locked = false; S.lockup = 0; S.launch = true;
+  S.v = 0; S.position = 0; S.playerX = -0.5; S.r = CAR.rLow; S.we = toW(750); S.locked = false; S.lockup = 0; S.launch = !!CAR.launchRatio;
   S.lap = 1; S.lapTime = 0; S.temp = Math.min(S.temp, 90); setCruise(false);
   cleanDist = 0;
   toast('Car reset to the start line');
@@ -1452,15 +1471,17 @@ function drawCVT(dt) {
   if (!compact) g.fillText(S.mode === 'N' ? 'neutral · engine free' : `${S.launch ? 'launch gear' : 'belt drive'} · converter ${S.locked ? 'locked' : 'slipping'}`, pw / 2, cy + 13 * d);
 
   // ratio bar (log scale, LOW → OD)
-  const bx0 = pad + 50 * d, bx1 = pw - pad - 30 * d, by = h - barH / 2 - 2 * d;
-  const lf = (r) => (Math.log(CAR.launchRatio) - Math.log(r)) / (Math.log(CAR.launchRatio) - Math.log(CAR.rHigh));
+  const bx0 = pad + (CAR.launchRatio ? 50 : 34) * d, bx1 = pw - pad - 30 * d, by = h - barH / 2 - 2 * d;
+  const lowEnd = CAR.launchRatio || CAR.rLow;
+  const lf = (r) => (Math.log(lowEnd) - Math.log(r)) / (Math.log(lowEnd) - Math.log(CAR.rHigh));
   g.lineCap = 'round';
   g.beginPath(); g.moveTo(bx0, by); g.lineTo(bx1, by); g.lineWidth = 6 * d; g.strokeStyle = COL.panel2; g.stroke();
   g.beginPath(); g.moveTo(bx0, by); g.lineTo(lerp(bx0, bx1, lf(ratioNow())), by); g.strokeStyle = COL.belt; g.stroke();
   g.lineCap = 'butt';
   const bxBelt = lerp(bx0, bx1, lf(CAR.rLow));
-  g.fillStyle = COL.muted; g.fillRect(bxBelt - 1 * d, by - 9 * d, 2 * d, 18 * d);
-  if (!compact && S.mode !== 'M') { g.textAlign = 'center'; g.font = `600 ${9 * d}px ${FONT_D}`; g.fillText('BELT', bxBelt, by - 15 * d); }
+  g.fillStyle = COL.muted;
+  if (CAR.launchRatio) g.fillRect(bxBelt - 1 * d, by - 9 * d, 2 * d, 18 * d);
+  if (CAR.launchRatio && !compact && S.mode !== 'M') { g.textAlign = 'center'; g.font = `600 ${9 * d}px ${FONT_D}`; g.fillText('BELT', bxBelt, by - 15 * d); }
   if (S.mode === 'M') {
     CAR.manual.forEach((r, i) => {
       const x = lerp(bx0, bx1, lf(r));
@@ -1475,7 +1496,7 @@ function drawCVT(dt) {
   const cxr = lerp(bx0, bx1, lf(ratioNow()));
   g.beginPath(); g.arc(cxr, by, 6 * d, 0, Math.PI * 2); g.fillStyle = COL.text; g.fill();
   g.font = `600 ${10 * d}px ${FONT_D}`; g.fillStyle = COL.muted;
-  g.textAlign = 'right'; g.fillText('LAUNCH', bx0 - 9 * d, by);
+  g.textAlign = 'right'; g.fillText(CAR.launchRatio ? 'LAUNCH' : 'LOW', bx0 - 9 * d, by);
   g.textAlign = 'left'; g.fillText('OD', bx1 + 9 * d, by);
 
   if (showTrace) drawTrace(g, pw + pad * 0.5, pad, w - pad, h - pad, d);
@@ -1508,7 +1529,7 @@ function drawTrace(g, x0, y0, x1, y1, d) {
 const el = {
   grade: $('#gradeChip'), lap: $('#lapChip'), pow: $('#stPow'), fuel: $('#stFuel'), avg: $('#stAvg'),
   temp: $('#stTemp'), t0100: $('#st0100'), t400: $('#st400'), odo: $('#stOdo'), bumps: $('#stBumps'),
-  launch: $('#lmLaunch'), lock: $('#lmLock'), tcs: $('#lmTcs'), cut: $('#lmCut'), cruise: $('#lmCruise'), hot: $('#lmHot'),
+  lock: $('#lmLock'), tcs: $('#lmTcs'), cut: $('#lmCut'), cruise: $('#lmCruise'), hot: $('#lmHot'),
 };
 const rec = (last, best) => (last == null ? (best == null ? '–' : `<small>best</small> ${best.toFixed(2)}`) : `${last.toFixed(2)} <small>/ ${best.toFixed(2)}</small>`);
 function updateHud() {
@@ -1525,7 +1546,6 @@ function updateHud() {
   el.t400.innerHTML = rec(REC.last400, REC.best400);
   el.odo.innerHTML = `${(S.tripDist / 1000).toFixed(1)} <small>km</small>`;
   el.bumps.textContent = String(S.bumps);
-  el.launch.classList.toggle('on', S.launch && S.mode !== 'N');
   el.lock.classList.toggle('on', S.locked);
   el.tcs.classList.toggle('on', S.tcs);
   el.cut.classList.toggle('on', S.fuelCut);
@@ -1556,7 +1576,7 @@ function frame(now) {
   renderRoad(now);
   const modeLabel = S.mode === 'M' ? `M${S.mStep + 1}` : S.mode;
   drawGauge(tachC, tachG, {
-    value: disp.rpm / 1000, max: 8, majors: 8, minor: 4, red: 6.8, accent: COL.amber,
+    value: disp.rpm / 1000, max: 8, majors: 8, minor: 4, red: 6.6, accent: COL.amber,
     label: (i) => String(i), digital: fmt(Math.round(disp.rpm / 10) * 10), unit: 'rpm',
     target: S.targetRpm != null && S.mode !== 'M' ? S.targetRpm / 1000 : null,
     badge: modeLabel, badgeColor: S.mode === 'S' ? COL.amber : S.mode === 'N' ? COL.muted : COL.belt,
