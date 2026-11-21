@@ -36,6 +36,16 @@ jobs:
       - run: python -m pip install -r YouTubeCoach/requirements.txt pytest
       - run: python -m pytest -v YouTubeCoach/tests
 
+  local-agent:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r LocalAgent/requirements.txt pytest
+      - run: python -m pytest -v LocalAgent/tests
+
   build:
     runs-on: windows-latest
     steps:

@@ -1,0 +1,25 @@
+Local Agent - an AI assistant that runs on your PC with Ollama
+==============================================================
+
+The AI runs on your own computer. No cloud, no API key, no cost per message.
+It can read files, write files and run commands in its work folder, and it
+asks you before every file write and every command.
+
+ONE-TIME SETUP
+   1. Install Python 3.10 or newer from python.org.
+   2. Install Ollama from ollama.com and open it.
+   3. Double-click agent.bat. The first run installs the Python package and
+      downloads the AI model (about 5 GB, needs internet once).
+
+USE IT
+   Double-click agent.bat and type what you want done.
+   Type  exit  to quit, or  reset  to start a new conversation.
+   The agent works in the "workspace" folder next to agent.bat.
+
+   Or in a terminal:
+      python agent.py
+      python agent.py --folder "C:\Users\me\Documents\Notes"
+      python agent.py --model llama3.2        (smaller model for older PCs)
+      python agent.py check
+
+See README.md for more.

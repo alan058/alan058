@@ -108,3 +108,7 @@ tests/                 tests for the sampling engine and the offline guarantee (
 
 [YouTubeCoach](YouTubeCoach/README.md): an AI agent that reviews your YouTube videos
 (title, thumbnail, transcript, view counts) and tells you how to get more viewers.
+
+[LocalAgent](LocalAgent/README.md): an AI assistant that runs on your own PC with
+[Ollama](https://ollama.com). It reads, writes and finds files and runs commands in one
+folder, and asks before it changes anything. No cloud or API key needed.
