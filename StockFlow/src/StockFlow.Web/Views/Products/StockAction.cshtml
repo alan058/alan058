@@ -1,0 +1,59 @@
+@model StockActionViewModel
+@{
+    var receiving = Model.Mode == StockActionMode.Receive;
+    ViewData["Title"] = receiving ? $"Receive {Model.Sku}" : $"Adjust {Model.Sku}";
+}
+<nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a asp-action="Index">Products</a></li><li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.ProductId">@Model.Sku</a></li><li class="breadcrumb-item active">@(receiving ? "Receive" : "Adjust")</li></ol></nav>
+
+<h1 class="h3">@(receiving ? "Receive stock" : "Adjust stock")</h1>
+<p class="text-muted">@Model.Sku · @Model.ProductName</p>
+
+<div class="row g-4">
+    <form asp-action="PostStock" method="post" class="col-lg-5">
+        <div asp-validation-summary="All" class="alert alert-danger empty-hidden"></div>
+        <input type="hidden" asp-for="ProductId" />
+        <input type="hidden" asp-for="Mode" />
+
+        <div class="mb-3">
+            <label asp-for="WarehouseId" class="form-label"></label>
+            <select asp-for="WarehouseId" asp-items="Model.Warehouses" class="form-select"><option value="0">Choose…</option></select>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Quantity" class="form-label">@(receiving ? "Quantity received" : "Change (use a minus sign to reduce)")</label>
+            <input asp-for="Quantity" class="form-control" type="number" />
+        </div>
+        @if (receiving)
+        {
+            <div class="mb-3">
+                <label asp-for="Reference" class="form-label"></label>
+                <input asp-for="Reference" class="form-control" placeholder="e.g. PO-10442" />
+            </div>
+        }
+        else
+        {
+            <div class="mb-3">
+                <label asp-for="Reason" class="form-label">Reason (required)</label>
+                <input asp-for="Reason" class="form-control" placeholder="e.g. Stock count variance, damaged in transit" />
+            </div>
+        }
+        <button type="submit" class="btn btn-primary">@(receiving ? "Receive" : "Post adjustment")</button>
+        <a class="btn btn-link" asp-action="Details" asp-route-id="@Model.ProductId">Cancel</a>
+    </form>
+
+    <div class="col-lg-5 offset-lg-1">
+        <h2 class="h6 text-muted">Current stock</h2>
+        <table class="table table-sm">
+            <thead><tr><th>Warehouse</th><th class="text-end">On hand</th><th class="text-end">Reserved</th><th class="text-end">Available</th></tr></thead>
+            <tbody>
+                @foreach (var s in Model.CurrentStock)
+                {
+                    <tr><td>@s.WarehouseCode</td><td class="text-end">@s.QuantityOnHand</td><td class="text-end">@s.QuantityReserved</td><td class="text-end">@s.QuantityAvailable</td></tr>
+                }
+            </tbody>
+        </table>
+        @if (!receiving)
+        {
+            <p class="small text-muted">Stock reserved for allocated orders cannot be adjusted away. Cancel or dispatch the order first.</p>
+        }
+    </div>
+</div>

@@ -1,0 +1,100 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build and test (Linux + SQL Server)
+    runs-on: ubuntu-latest
+
+    services:
+      sql:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: "Y"
+          MSSQL_SA_PASSWORD: "StockFlow!Ci12345"
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P StockFlow!Ci12345 -Q 'SELECT 1' || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 20
+
+    env:
+      DOTNET_NOLOGO: true
+      # Enables the SQL Server repository contract tests (they are skipped without it).
+      STOCKFLOW_TEST_SQL: "Server=localhost,1433;User Id=sa;Password=StockFlow!Ci12345;TrustServerCertificate=True"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore StockFlow.sln
+
+      # Builds every project, including the VB.NET WinForms app (EnableWindowsTargeting).
+      - name: Build
+        run: dotnet build StockFlow.sln --configuration Release --no-restore
+
+      - name: Test
+        run: >-
+          dotnet test StockFlow.sln --configuration Release --no-build
+          --logger "trx;LogFileName=results.trx" --results-directory TestResults
+
+      - name: Check that no tests were skipped
+        shell: bash
+        run: |
+          if grep -q 'outcome="NotExecuted"' TestResults/results.trx; then
+            echo "::error::Some tests were skipped. The SQL Server contract tests must run in CI."
+            exit 1
+          fi
+
+      - name: Deploy database twice (deployment must be repeatable)
+        env:
+          STOCKFLOW_DB: "Server=localhost,1433;Database=StockFlowCi;User Id=sa;Password=StockFlow!Ci12345;TrustServerCertificate=True"
+        run: |
+          dotnet run --project tools/StockFlow.DbDeploy --configuration Release --no-build -- --seed-demo
+          dotnet run --project tools/StockFlow.DbDeploy --configuration Release --no-build -- --seed-demo
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: TestResults
+
+  desktop:
+    name: Desktop app (Windows)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Publish VB.NET WinForms app
+        run: dotnet publish src/StockFlow.Desktop/StockFlow.Desktop.vbproj -c Release -r win-x64 --self-contained false -o publish/desktop
+
+      - name: Smoke test (app starts and stays up with demo data)
+        shell: pwsh
+        run: |
+          $p = Start-Process -FilePath publish/desktop/StockFlow.Desktop.exe -PassThru
+          Start-Sleep -Seconds 15
+          if ($p.HasExited) { throw "StockFlow.Desktop exited early with code $($p.ExitCode)" }
+          Stop-Process -Id $p.Id
+          Write-Host "Desktop app started successfully."
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: stockflow-desktop
+          path: publish/desktop

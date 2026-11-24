@@ -1,0 +1,8 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Something went wrong";
+}
+<h1 class="h3">Something went wrong</h1>
+<p>The problem has been logged. Please try again, and if it keeps happening contact support with this reference:</p>
+<p><code class="fs-5">@Model?.RequestId</code></p>
+<a class="btn btn-primary" asp-controller="Home" asp-action="Index">Back to the dashboard</a>

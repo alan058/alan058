@@ -1,0 +1,57 @@
+@model ProductDetailsViewModel
+@{
+    ViewData["Title"] = Model.Product.Sku;
+    var d = Model.Detail;
+}
+<nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a asp-action="Index">Products</a></li><li class="breadcrumb-item active">@Model.Product.Sku</li></ol></nav>
+
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+    <div>
+        <h1 class="h3 mb-1">@Model.Product.Name</h1>
+        <div class="text-muted">@Model.Product.Sku · @Model.Product.CategoryName · R @HtmlExtensions.Money(Model.Product.UnitPrice) @if (!Model.Product.IsActive) { <span class="badge text-bg-secondary">Inactive</span> }</div>
+    </div>
+    <div class="btn-group">
+        <a class="btn btn-success" asp-action="Receive" asp-route-id="@Model.Product.ProductId">Receive stock</a>
+        <a class="btn btn-outline-secondary" asp-action="Adjust" asp-route-id="@Model.Product.ProductId">Adjust</a>
+        <a class="btn btn-outline-secondary" asp-action="Edit" asp-route-id="@Model.Product.ProductId">Edit</a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <h2 class="h5">Stock by warehouse</h2>
+        <table class="table table-sm">
+            <thead><tr><th>Warehouse</th><th class="text-end">On hand</th><th class="text-end">Reserved</th><th class="text-end">Available</th></tr></thead>
+            <tbody>
+                @foreach (var s in d.StockLevels)
+                {
+                    <tr><td title="@s.WarehouseName">@s.WarehouseCode</td><td class="text-end">@s.QuantityOnHand</td><td class="text-end">@s.QuantityReserved</td><td class="text-end">@s.QuantityAvailable</td></tr>
+                }
+            </tbody>
+            <tfoot class="fw-semibold">
+                <tr><td>Total</td><td class="text-end">@d.TotalOnHand</td><td class="text-end">@d.TotalReserved</td><td class="text-end @(d.TotalAvailable <= Model.Product.ReorderLevel ? "text-danger" : "")">@d.TotalAvailable</td></tr>
+            </tfoot>
+        </table>
+        <p class="small text-muted">Reorder level: @Model.Product.ReorderLevel</p>
+    </div>
+    <div class="col-lg-7">
+        <h2 class="h5">Recent movements</h2>
+        <table class="table table-sm">
+            <thead><tr><th>When (UTC)</th><th>Type</th><th>WH</th><th class="text-end">On hand</th><th class="text-end">Reserved</th><th>Reference / reason</th><th>By</th></tr></thead>
+            <tbody>
+                @foreach (var m in Model.Movements)
+                {
+                    <tr>
+                        <td class="text-nowrap">@m.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>@m.MovementType</td>
+                        <td>@m.WarehouseCode</td>
+                        <td class="text-end">@(m.QuantityChange == 0 ? "" : m.QuantityChange.ToString("+#;-#"))</td>
+                        <td class="text-end">@(m.ReservedChange == 0 ? "" : m.ReservedChange.ToString("+#;-#"))</td>
+                        <td>@m.Reference @m.Reason</td>
+                        <td>@m.CreatedBy</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

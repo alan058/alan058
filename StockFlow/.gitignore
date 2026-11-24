@@ -1,0 +1,22 @@
+# Build output
+bin/
+obj/
+publish/
+artifacts/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# Test results
+TestResults/
+*.trx
+coverage*/
+
+# Local secrets and settings
+appsettings.*.local.json
+*.local.json
+.env

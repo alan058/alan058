@@ -1,0 +1,60 @@
+@model SalesOrder
+@{
+    ViewData["Title"] = Model.OrderNumber;
+}
+<nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a asp-action="Index">Orders</a></li><li class="breadcrumb-item active">@Model.OrderNumber</li></ol></nav>
+
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+    <div>
+        <h1 class="h3 mb-1">@Model.OrderNumber @Html.StatusBadge(Model.Status)</h1>
+        <div class="text-muted">@Model.CustomerName · ships from @Model.WarehouseCode · created @Model.OrderDate.ToString("yyyy-MM-dd HH:mm") UTC by @Model.CreatedBy</div>
+        @if (Model.RequiredDate.HasValue) { <div class="text-muted">Required by @Model.RequiredDate.Value.ToString("yyyy-MM-dd")</div> }
+        @if (Model.DispatchedAt.HasValue) { <div class="text-muted">Dispatched @Model.DispatchedAt.Value.ToString("yyyy-MM-dd HH:mm") UTC</div> }
+    </div>
+    <div class="d-flex gap-2">
+        @if (OrderStatusRules.CanAllocate(Model.Status))
+        {
+            <form asp-action="Allocate" asp-route-id="@Model.SalesOrderId" method="post"><button class="btn btn-warning" type="submit">Allocate stock</button></form>
+        }
+        @if (OrderStatusRules.CanDispatch(Model.Status))
+        {
+            <form asp-action="Dispatch" asp-route-id="@Model.SalesOrderId" method="post"><button class="btn btn-success" type="submit">Dispatch</button></form>
+        }
+        @if (OrderStatusRules.CanCancel(Model.Status))
+        {
+            <form asp-action="Cancel" asp-route-id="@Model.SalesOrderId" method="post" onsubmit="return confirm('Cancel @Model.OrderNumber?');"><button class="btn btn-outline-danger" type="submit">Cancel order</button></form>
+        }
+    </div>
+</div>
+
+@if (Model.Status == OrderStatus.Open && !Model.CanBeFullyAllocated)
+{
+    <div class="alert alert-warning">Some lines are short in @Model.WarehouseCode. Allocation will fail until stock is received or the order is changed.</div>
+}
+
+<table class="table align-middle">
+    <thead><tr><th>SKU</th><th>Product</th><th class="text-end">Qty</th><th class="text-end">Unit price (R)</th><th class="text-end">Line total (R)</th>@if (Model.Status == OrderStatus.Open) { <th class="text-end">Available in @Model.WarehouseCode</th> }</tr></thead>
+    <tbody>
+        @foreach (var l in Model.Lines)
+        {
+            <tr>
+                <td><a asp-controller="Products" asp-action="Details" asp-route-id="@l.ProductId">@l.Sku</a></td>
+                <td>@l.ProductName</td>
+                <td class="text-end">@l.Quantity</td>
+                <td class="text-end">@HtmlExtensions.Money(l.UnitPrice)</td>
+                <td class="text-end">@HtmlExtensions.Money(l.LineTotal)</td>
+                @if (Model.Status == OrderStatus.Open)
+                {
+                    <td class="text-end @(l.QuantityAvailable < l.Quantity ? "text-danger fw-semibold" : "")">@l.QuantityAvailable</td>
+                }
+            </tr>
+        }
+    </tbody>
+    <tfoot class="fw-semibold"><tr><td colspan="2">Total</td><td class="text-end">@Model.TotalQuantity</td><td></td><td class="text-end">@HtmlExtensions.Money(Model.TotalValue)</td>@if (Model.Status == OrderStatus.Open) { <td></td> }</tr></tfoot>
+</table>
+
+@if (!string.IsNullOrEmpty(Model.Notes))
+{
+    <h2 class="h6">Notes</h2>
+    <p>@Model.Notes</p>
+}

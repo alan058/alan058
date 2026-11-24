@@ -1,0 +1,10 @@
+body { background: #f6f7f9; }
+.card.stat { height: 100%; color: inherit; }
+.card.stat:hover { box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.06); }
+.stat-label { font-size: 0.8rem; color: #6c757d; text-transform: uppercase; letter-spacing: 0.03em; }
+.stat-value { font-size: 1.75rem; font-weight: 600; }
+.table { background: #fff; }
+/* Hide the validation summary box when it has no messages. */
+.validation-summary-valid.empty-hidden { display: none; }
+/* The first column holds codes (SKU, order number) that must not wrap mid-code. */
+.table td:first-child { white-space: nowrap; }

@@ -1,0 +1,8 @@
+* text=auto
+*.sql    text eol=crlf
+*.vb     text eol=crlf
+*.cs     text eol=crlf
+*.sln    text eol=crlf
+*.csproj text eol=crlf
+*.vbproj text eol=crlf
+*.sh     text eol=lf

@@ -1,0 +1,35 @@
+@model IReadOnlyList<LowStockItem>
+@{
+    ViewData["Title"] = "Low stock";
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Low stock report</h1>
+    <a class="btn btn-outline-secondary" asp-action="LowStockCsv">Download CSV</a>
+</div>
+<p class="text-muted">Active products whose available stock across all warehouses is at or below the reorder level. The suggested order brings stock up to twice the reorder level.</p>
+
+@if (Model.Count == 0)
+{
+    <p>Nothing needs reordering.</p>
+}
+else
+{
+    <table class="table table-hover align-middle">
+        <thead><tr><th>SKU</th><th>Product</th><th>Category</th><th class="text-end">On hand</th><th class="text-end">Reserved</th><th class="text-end">Available</th><th class="text-end">Reorder at</th><th class="text-end">Suggested order</th></tr></thead>
+        <tbody>
+            @foreach (var i in Model)
+            {
+                <tr>
+                    <td><a asp-controller="Products" asp-action="Details" asp-route-id="@i.ProductId">@i.Sku</a></td>
+                    <td>@i.Name</td>
+                    <td>@i.CategoryName</td>
+                    <td class="text-end">@i.QuantityOnHand</td>
+                    <td class="text-end">@i.QuantityReserved</td>
+                    <td class="text-end text-danger fw-semibold">@i.QuantityAvailable</td>
+                    <td class="text-end">@i.ReorderLevel</td>
+                    <td class="text-end fw-semibold">@i.SuggestedOrderQuantity</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

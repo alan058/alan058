@@ -1,0 +1,53 @@
+@model ProductEditViewModel
+@{
+    ViewData["Title"] = Model.IsNew ? "Add product" : $"Edit {Model.Sku}";
+}
+<h1 class="h3 mb-3">@ViewData["Title"]</h1>
+
+<form asp-action="Save" method="post" class="col-lg-6">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger empty-hidden"></div>
+    <input type="hidden" asp-for="ProductId" />
+    <input type="hidden" asp-for="RowVersion" />
+
+    <div class="mb-3">
+        <label asp-for="Sku" class="form-label"></label>
+        <input asp-for="Sku" class="form-control text-uppercase" autocomplete="off" />
+        <span asp-validation-for="Sku" class="text-danger small"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger small"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="CategoryId" class="form-label"></label>
+        <select asp-for="CategoryId" asp-items="Model.Categories" class="form-select"><option value="0">Choose…</option></select>
+        <span asp-validation-for="CategoryId" class="text-danger small"></span>
+    </div>
+    <div class="row">
+        <div class="col mb-3">
+            <label asp-for="UnitPrice" class="form-label"></label>
+            <input asp-for="UnitPrice" class="form-control" type="number" step="0.01" min="0" />
+            <span asp-validation-for="UnitPrice" class="text-danger small"></span>
+        </div>
+        <div class="col mb-3">
+            <label asp-for="ReorderLevel" class="form-label"></label>
+            <input asp-for="ReorderLevel" class="form-control" type="number" min="0" />
+            <span asp-validation-for="ReorderLevel" class="text-danger small"></span>
+        </div>
+    </div>
+    <div class="form-check mb-3">
+        <input asp-for="IsActive" class="form-check-input" />
+        <label asp-for="IsActive" class="form-check-label"></label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    @if (Model.IsNew)
+    {
+        <a class="btn btn-link" asp-action="Index">Cancel</a>
+    }
+    else
+    {
+        <a class="btn btn-link" asp-action="Details" asp-route-id="@Model.ProductId">Cancel</a>
+    }
+</form>

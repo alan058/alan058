@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    StockFlow back-office client: VB.NET Windows Forms on .NET 8.
+    It uses the same C# business services and data layer as the web app.
+    EnableWindowsTargeting lets CI compile it on Linux; it runs on Windows only.
+  -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <RootNamespace>StockFlow.Desktop</RootNamespace>
+    <AssemblyName>StockFlow.Desktop</AssemblyName>
+    <StartupObject>StockFlow.Desktop.Program</StartupObject>
+    <MyType>WindowsFormsWithCustomSubMain</MyType>
+  </PropertyGroup>
+
+  <!-- Project-wide Imports (VB's equivalent of global usings). -->
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Threading.Tasks" />
+    <Import Include="System.Windows.Forms" />
+    <Import Include="StockFlow.Core.Models" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StockFlow.Core\StockFlow.Core.csproj" />
+    <ProjectReference Include="..\StockFlow.Data\StockFlow.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

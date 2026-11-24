@@ -1,0 +1,22 @@
+{
+  "profiles": {
+    "StockFlow.Web (in-memory demo data)": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "applicationUrl": "http://localhost:5080",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "StockFlow.Web (local SQL Server)": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "applicationUrl": "http://localhost:5080",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "StockFlow__Data__Provider": "SqlServer",
+        "StockFlow__Data__ConnectionString": "Server=localhost,1433;Database=StockFlow;User Id=sa;Password=StockFlow!Dev123;TrustServerCertificate=True"
+      }
+    }
+  }
+}

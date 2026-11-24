@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - StockFlow</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand fw-semibold" asp-controller="Home" asp-action="Index">StockFlow</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="nav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Products" asp-action="Index">Products</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Orders" asp-action="Index">Orders</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Reports" asp-action="LowStock">Low stock</a></li>
+                </ul>
+                <a class="btn btn-sm btn-outline-light" asp-controller="Orders" asp-action="Create">New order</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container pb-5">
+        <partial name="_StatusMessages" />
+        @RenderBody()
+    </main>
+
+    <footer class="border-top py-3 text-muted small">
+        <div class="container">StockFlow inventory &amp; order fulfilment</div>
+    </footer>
+
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

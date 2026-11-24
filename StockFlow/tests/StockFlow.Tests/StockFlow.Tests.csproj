@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <!-- xUnit analyzers suggest async patterns that are not useful for these tests. -->
+    <NoWarn>$(NoWarn);xUnit1031</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageReference Include="Xunit.SkippableFact" Version="1.4.13" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\StockFlow.Core\StockFlow.Core.csproj" />
+    <ProjectReference Include="..\..\src\StockFlow.Data\StockFlow.Data.csproj" />
+    <ProjectReference Include="..\..\src\StockFlow.Web\StockFlow.Web.csproj" />
+  </ItemGroup>
+
+  <!-- The SQL Server contract tests deploy a throw-away database from these scripts. -->
+  <ItemGroup>
+    <None Include="..\..\database\**\*.sql" LinkBase="database" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+</Project>

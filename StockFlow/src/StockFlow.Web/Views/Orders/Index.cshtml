@@ -1,0 +1,43 @@
+@model OrderIndexViewModel
+@{
+    ViewData["Title"] = "Orders";
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Sales orders</h1>
+    <a class="btn btn-primary" asp-action="Create">New order</a>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-4"><input class="form-control" name="q" value="@Model.Q" placeholder="Order number or customer" aria-label="Search" /></div>
+    <div class="col-md-3">
+        <select class="form-select" name="status" asp-items="Html.GetEnumSelectList<OrderStatus>()" aria-label="Status">
+            <option value="">All statuses</option>
+        </select>
+    </div>
+    <div class="col-auto"><button class="btn btn-outline-secondary" type="submit">Filter</button></div>
+</form>
+
+<table class="table table-hover align-middle">
+    <thead>
+        <tr><th>Order</th><th>Date (UTC)</th><th>Customer</th><th>From</th><th>Status</th><th class="text-end">Lines</th><th class="text-end">Units</th><th class="text-end">Value (R)</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var o in Model.Orders)
+        {
+            <tr>
+                <td><a asp-action="Details" asp-route-id="@o.SalesOrderId">@o.OrderNumber</a></td>
+                <td>@o.OrderDate.ToString("yyyy-MM-dd")</td>
+                <td>@o.CustomerName</td>
+                <td>@o.WarehouseCode</td>
+                <td>@Html.StatusBadge(o.Status)</td>
+                <td class="text-end">@o.LineCount</td>
+                <td class="text-end">@o.TotalQuantity</td>
+                <td class="text-end">@HtmlExtensions.Money(o.TotalValue)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+@if (Model.Orders.Count == 0)
+{
+    <p class="text-muted">No orders match the filter.</p>
+}
